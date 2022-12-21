@@ -10,6 +10,8 @@
   },
   "action": {},
   "background": {
-    "service_worker": "./static/js/background.js"
-  }
+    "service_worker": "./static/js/background.js",
+    "type": "module"
+  },
+  "permissions": ["tabs", "tabGroups", "storage"]
 }

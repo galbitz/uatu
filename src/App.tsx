@@ -1,24 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import logo from "./logo.svg";
+import "./App.css";
 
 function App() {
+  const [tabState, setTabState] = useState("");
+  const handleButton = () => {
+    //console.log("send to service worker [login] ->", email, pass);
+    console.log("send to service worker [login]");
+    chrome.runtime.sendMessage(
+      { command: "auth-login", e: "galbitz@gmail.com", p: "" },
+      (response) => {
+        console.log(response);
+      }
+    );
+  };
+
+  const handleDump = async () => {
+    const tabResult = (await chrome.storage.local.get("tabs")).tabs;
+    console.log(tabResult);
+    setTabState(JSON.stringify(tabResult));
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <button onClick={handleButton}>Login</button>
+      <div>
+        <button onClick={handleDump}>Dump</button>
+      </div>
+      {tabState}
     </div>
   );
 }

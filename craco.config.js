@@ -1,3 +1,4 @@
+const chunkPlugin = require("./craco-chunk-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 module.exports = {
   webpack: {
@@ -32,4 +33,10 @@ module.exports = {
       };
     },
   },
+  plugins: [
+    {
+      plugin: chunkPlugin,
+      options: {},
+    },
+  ],
 };

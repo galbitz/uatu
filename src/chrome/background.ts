@@ -1,9 +1,40 @@
+// Import the functions you need from the SDKs you need
+import { tab } from "@testing-library/user-event/dist/tab";
+import { initializeApp } from "firebase/app";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+} from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+import { v4 as uuidv4 } from "uuid";
+
+// TODO: WRAP EVERYTHING IT TRY CATCH!!!!
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyBkvSpDQ7oLbjTQXRDmngzk8KJN_2wHkZM",
+  authDomain: "tab4-5a611.firebaseapp.com",
+  projectId: "tab4-5a611",
+  storageBucket: "tab4-5a611.appspot.com",
+  messagingSenderId: "750779374697",
+  appId: "1:750779374697:web:651a17f1620c98cabad6f8",
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
 export {};
 /** Fired when the extension is first installed,
  *  when the extension is updated to a new version,
  *  and when Chrome is updated to a new version. */
 chrome.runtime.onInstalled.addListener((details) => {
   console.log("[background.js] onInstalled", details);
+  saveTabs();
 });
 
 chrome.runtime.onConnect.addListener((port) => {
@@ -32,4 +63,218 @@ chrome.action.onClicked.addListener(async function () {
   await chrome.tabs.create({
     url: chrome.runtime.getURL("index.html"),
   });
+
+  //await dumpTabs();
 });
+
+// async function dumpTabs() {
+//   const tabs = await chrome.tabs.query({});
+//   console.log(tabs);
+// }
+
+chrome.tabs.onRemoved.addListener(async (tabId: number, removeInfo: object) => {
+  console.log("removed", tabId, removeInfo);
+  saveTabs();
+});
+
+chrome.tabs.onUpdated.addListener(
+  async (
+    tabId: number,
+    changeInfo: { status?: string },
+    tab: chrome.tabs.Tab
+  ) => {
+    if (changeInfo.status === "complete") {
+      console.log("Tab loaded: ", tab.url);
+      saveTabs();
+    }
+  }
+);
+
+/*
+  Response Calls
+    resp({type: "result", status: "success", data: doc.data(), request: msg});
+    resp({type: "result", status: "error", data: error, request: msg});
+  */
+chrome.runtime.onMessage.addListener((msg, sender, resp) => {
+  if (msg.command == "user-auth") {
+    auth.onAuthStateChanged(function (user) {
+      if (user) {
+        // User is signed in.
+        chrome.storage.local.set({ authInfo: user });
+        // firebase
+        //   .database()
+        //   .ref("/users/" + user.uid)
+        //   .once("value")
+        //   .then(function (snapshot) {
+        //     console.log(snapshot.val());
+        //     resp({
+        //       type: "result",
+        //       status: "success",
+        //       data: user,
+        //       userObj: snapshot.val(),
+        //     });
+        //   })
+        //   .catch((result) => {
+        //     chrome.storage.local.set({ authInfo: false });
+        //     resp({ type: "result", status: "error", data: false });
+        //   });
+      } else {
+        // No user is signed in.
+        chrome.storage.local.set({ authInfo: false });
+        resp({ type: "result", status: "error", data: false });
+      }
+    });
+  }
+
+  //Auth
+  //logout
+  if (msg.command == "auth-logout") {
+    auth.signOut().then(
+      function () {
+        //user logged out...
+        chrome.storage.local.set({ authInfo: false });
+        resp({ type: "result", status: "success", data: false });
+      },
+      function (error) {
+        //logout error....
+        resp({
+          type: "result",
+          status: "error",
+          data: false,
+          message: error,
+        });
+      }
+    );
+  }
+  //Login
+  if (msg.command == "auth-login") {
+    //login user
+    signInWithEmailAndPassword(auth, msg.e, msg.p).catch(function (error) {
+      if (error) {
+        //return error msg...
+        chrome.storage.local.set({ authInfo: false });
+        resp({ type: "result", status: "error", data: false });
+      }
+    });
+    auth.onAuthStateChanged(function (user) {
+      if (user) {
+        //return success user objct...
+        console.log("user", user);
+        chrome.storage.local.set({ authInfo: user });
+        // firebase
+        //   .database()
+        //   .ref("/users/" + user.uid)
+        //   .once("value")
+        //   .then(function (snapshot) {
+        //     resp({
+        //       type: "result",
+        //       status: "success",
+        //       data: user,
+        //       userObj: snapshot.val(),
+        //     });
+        //   })
+        //   .catch((result) => {
+        //     chrome.storage.local.set({ authInfo: false });
+        //     resp({ type: "result", status: "error", data: false });
+        //   });
+      }
+    });
+  }
+  //Sign Up
+  if (msg.command == "auth-signup") {
+    //create user
+    ///get user id
+    //make call to lambda
+    chrome.storage.local.set({ authInfo: false });
+    auth.signOut();
+    createUserWithEmailAndPassword(auth, msg.e, msg.p).catch(function (error) {
+      // Handle Errors here.
+      chrome.storage.local.set({ authInfo: false }); // clear any current session
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      resp({ type: "signup", status: "error", data: false, message: error });
+    });
+    //complete payment and create user object into database with new uid
+    auth.onAuthStateChanged(function (user) {
+      if (user) {
+        // //user created and logged in ...
+        // //build url...
+        // var urlAWS = "https://ENTER-YOUR-LAMBA-URL-HERE?stripe=true";
+        // urlAWS += "&uid=" + user.uid;
+        // urlAWS += "&email=" + msg.e;
+        // urlAWS += "&token=" + msg.tokenId;
+        // chrome.storage.local.set({ authInfo: user });
+        // //console.log('make call to lambda:', urlAWS);
+        // try {
+        //   //catch any errors
+        //   fetch(urlAWS)
+        //     .then((response) => {
+        //       return response.json(); //convert to json for response...
+        //     })
+        //     .then((res) => {
+        //       //update and create user obj
+        //       firebase
+        //         .database()
+        //         .ref("/users/" + user.uid)
+        //         .set({ stripeId: res });
+        //       //success / update user / and return
+        //       firebase
+        //         .database()
+        //         .ref("/users/" + user.uid)
+        //         .once("value")
+        //         .then(function (snapshot) {
+        //           resp({
+        //             type: "result",
+        //             status: "success",
+        //             data: user,
+        //             userObj: snapshot.val(),
+        //           });
+        //         })
+        //         .catch((result) => {
+        //           chrome.storage.local.set({ authInfo: false });
+        //           resp({ type: "result", status: "error", data: false });
+        //         });
+        //     })
+        //     .catch((error) => {
+        //       console.log(error, "error with payment?");
+        //       chrome.storage.local.set({ authInfo: false });
+        //       resp({ type: "result", status: "error", data: false });
+        //     });
+        // } catch (e) {
+        //   console.log(error, "error with payment?");
+        //   chrome.storage.local.set({ authInfo: false });
+        //   resp({ type: "result", status: "error", data: false });
+        // }
+      }
+    });
+  }
+  return true;
+});
+
+//TODO: find better pattern
+const lazyInit = (fn: any) => {
+  let prom: any = undefined;
+  return () => (prom = prom || fn());
+};
+
+const getBrowserId = lazyInit(async () => {
+  const storedbrowserId = (await chrome.storage.local.get("browserId"))
+    .browserId;
+  if (storedbrowserId) {
+    return storedbrowserId;
+  }
+
+  const newBrowserId = uuidv4();
+  await chrome.storage.local.set({ browserId: newBrowserId });
+
+  return newBrowserId;
+});
+
+async function saveTabs() {
+  const tabs = await chrome.tabs.query({});
+  const tabsToSave = tabs.map((tab) => {
+    return { name: tab.title, url: tab.url };
+  });
+  await chrome.storage.local.set({ tabs: tabsToSave });
+}
+console.log(new Date().toLocaleString());
