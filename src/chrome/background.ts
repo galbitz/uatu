@@ -1,5 +1,4 @@
 // Import the functions you need from the SDKs you need
-import { tab } from "@testing-library/user-event/dist/tab";
 import { initializeApp } from "firebase/app";
 import {
   getAuth,
@@ -10,6 +9,7 @@ import { getFirestore } from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 import { v4 as uuidv4 } from "uuid";
+import browser from "webextension-polyfill";
 
 // TODO: WRAP EVERYTHING IT TRY CATCH!!!!
 
@@ -32,18 +32,18 @@ export {};
 /** Fired when the extension is first installed,
  *  when the extension is updated to a new version,
  *  and when Chrome is updated to a new version. */
-chrome.runtime.onInstalled.addListener((details) => {
+browser.runtime.onInstalled.addListener((details) => {
   console.log("[background.js] onInstalled", details);
   saveTabs();
 });
 
-chrome.runtime.onConnect.addListener((port) => {
-  console.log("[background.js] onConnect", port);
-});
+// browser.runtime.onConnect.addListener((port) => {
+//   console.log("[background.js] onConnect", port);
+// });
 
-chrome.runtime.onStartup.addListener(() => {
-  console.log("[background.js] onStartup");
-});
+// chrome.runtime.onStartup.addListener(() => {
+//   console.log("[background.js] onStartup");
+// });
 
 /**
  *  Sent to the event page just before it is unloaded.
@@ -54,14 +54,14 @@ chrome.runtime.onStartup.addListener(() => {
  *  If more activity for the event page occurs before it gets
  *  unloaded the onSuspendCanceled event will
  *  be sent and the page won't be unloaded. */
-chrome.runtime.onSuspend.addListener(() => {
-  console.log("[background.js] onSuspend");
-});
+// chrome.runtime.onSuspend.addListener(() => {
+//   console.log("[background.js] onSuspend");
+// });
 
-chrome.action.onClicked.addListener(async function () {
+browser.action.onClicked.addListener(async function () {
   console.log("[background.js] onclicked");
-  await chrome.tabs.create({
-    url: chrome.runtime.getURL("index.html"),
+  await browser.tabs.create({
+    url: browser.runtime.getURL("index.html"),
   });
 
   //await dumpTabs();
@@ -72,16 +72,18 @@ chrome.action.onClicked.addListener(async function () {
 //   console.log(tabs);
 // }
 
-chrome.tabs.onRemoved.addListener(async (tabId: number, removeInfo: object) => {
-  console.log("removed", tabId, removeInfo);
-  saveTabs();
-});
+browser.tabs.onRemoved.addListener(
+  async (tabId: number, removeInfo: object) => {
+    console.log("removed", tabId, removeInfo);
+    saveTabs();
+  }
+);
 
-chrome.tabs.onUpdated.addListener(
+browser.tabs.onUpdated.addListener(
   async (
     tabId: number,
     changeInfo: { status?: string },
-    tab: chrome.tabs.Tab
+    tab: browser.Tabs.Tab
   ) => {
     if (changeInfo.status === "complete") {
       console.log("Tab loaded: ", tab.url);
@@ -95,12 +97,12 @@ chrome.tabs.onUpdated.addListener(
     resp({type: "result", status: "success", data: doc.data(), request: msg});
     resp({type: "result", status: "error", data: error, request: msg});
   */
-chrome.runtime.onMessage.addListener((msg, sender, resp) => {
+browser.runtime.onMessage.addListener((msg, sender) => {
   if (msg.command == "user-auth") {
     auth.onAuthStateChanged(function (user) {
       if (user) {
         // User is signed in.
-        chrome.storage.local.set({ authInfo: user });
+        browser.storage.local.set({ authInfo: user });
         // firebase
         //   .database()
         //   .ref("/users/" + user.uid)
@@ -118,10 +120,15 @@ chrome.runtime.onMessage.addListener((msg, sender, resp) => {
         //     chrome.storage.local.set({ authInfo: false });
         //     resp({ type: "result", status: "error", data: false });
         //   });
+        //resp({ type: "result", status: "error", data: false });
       } else {
         // No user is signed in.
-        chrome.storage.local.set({ authInfo: false });
-        resp({ type: "result", status: "error", data: false });
+        browser.storage.local.set({ authInfo: false });
+        // return Promise.resolve({
+        //   type: "result",
+        //   status: "error",
+        //   data: false,
+        // });
       }
     });
   }
@@ -132,17 +139,17 @@ chrome.runtime.onMessage.addListener((msg, sender, resp) => {
     auth.signOut().then(
       function () {
         //user logged out...
-        chrome.storage.local.set({ authInfo: false });
-        resp({ type: "result", status: "success", data: false });
+        browser.storage.local.set({ authInfo: false });
+        //resp({ type: "result", status: "success", data: false });
       },
       function (error) {
         //logout error....
-        resp({
-          type: "result",
-          status: "error",
-          data: false,
-          message: error,
-        });
+        // resp({
+        //   type: "result",
+        //   status: "error",
+        //   data: false,
+        //   message: error,
+        // });
       }
     );
   }
@@ -152,15 +159,16 @@ chrome.runtime.onMessage.addListener((msg, sender, resp) => {
     signInWithEmailAndPassword(auth, msg.e, msg.p).catch(function (error) {
       if (error) {
         //return error msg...
-        chrome.storage.local.set({ authInfo: false });
-        resp({ type: "result", status: "error", data: false });
+        browser.storage.local.set({ authInfo: false });
+        //resp({ type: "result", status: "error", data: false });
       }
     });
     auth.onAuthStateChanged(function (user) {
       if (user) {
         //return success user objct...
-        console.log("user", user);
-        chrome.storage.local.set({ authInfo: user });
+        console.log("user login", user);
+        browser.storage.local.set({ authInfo: user });
+        //resp({ type: "result", status: "OK", data: false });
         // firebase
         //   .database()
         //   .ref("/users/" + user.uid)
@@ -185,14 +193,14 @@ chrome.runtime.onMessage.addListener((msg, sender, resp) => {
     //create user
     ///get user id
     //make call to lambda
-    chrome.storage.local.set({ authInfo: false });
+    browser.storage.local.set({ authInfo: false });
     auth.signOut();
     createUserWithEmailAndPassword(auth, msg.e, msg.p).catch(function (error) {
       // Handle Errors here.
-      chrome.storage.local.set({ authInfo: false }); // clear any current session
+      browser.storage.local.set({ authInfo: false }); // clear any current session
       var errorCode = error.code;
       var errorMessage = error.message;
-      resp({ type: "signup", status: "error", data: false, message: error });
+      //resp({ type: "signup", status: "error", data: false, message: error });
     });
     //complete payment and create user object into database with new uid
     auth.onAuthStateChanged(function (user) {
@@ -248,7 +256,7 @@ chrome.runtime.onMessage.addListener((msg, sender, resp) => {
       }
     });
   }
-  return true;
+  return Promise.resolve({ state: "OOOKK" });
 });
 
 //TODO: find better pattern
@@ -258,23 +266,22 @@ const lazyInit = (fn: any) => {
 };
 
 const getBrowserId = lazyInit(async () => {
-  const storedbrowserId = (await chrome.storage.local.get("browserId"))
+  const storedbrowserId = (await browser.storage.local.get("browserId"))
     .browserId;
   if (storedbrowserId) {
     return storedbrowserId;
   }
 
   const newBrowserId = uuidv4();
-  await chrome.storage.local.set({ browserId: newBrowserId });
+  await browser.storage.local.set({ browserId: newBrowserId });
 
   return newBrowserId;
 });
 
 async function saveTabs() {
-  const tabs = await chrome.tabs.query({});
+  const tabs = await browser.tabs.query({});
   const tabsToSave = tabs.map((tab) => {
     return { name: tab.title, url: tab.url };
   });
-  await chrome.storage.local.set({ tabs: tabsToSave });
+  await browser.storage.local.set({ tabs: tabsToSave });
 }
-console.log(new Date().toLocaleString());
