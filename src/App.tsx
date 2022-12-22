@@ -1,19 +1,12 @@
-import React, { useState } from "react";
-import logo from "./logo.svg";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 import browser from "webextension-polyfill";
 
 function App() {
   const [tabState, setTabState] = useState("");
   const handleButton = async () => {
-    //console.log("send to service worker [login] ->", email, pass);
     console.log("send to service worker [login]");
-    // chrome.runtime.sendMessage(
-    //   { command: "auth-login", e: "galbitz@gmail.com", p: "" },
-    //   (response) => {
-    //     console.log(response);
-    //   }
-    // );
+
     var response = await browser.runtime.sendMessage({
       command: "auth-login",
       e: "galbitz@gmail.com",
@@ -22,19 +15,19 @@ function App() {
     console.log("response from background", response);
   };
 
-  const handleDump = async () => {
-    const tabResult = (await browser.storage.local.get("tabs")).tabs;
-    console.log(tabResult);
-    setTabState(JSON.stringify(tabResult));
-  };
+  useEffect(() => {
+    browser.runtime.onMessage.addListener((msg) => {
+      if (msg.command == "doc-update") {
+        setTabState(JSON.stringify(msg.data));
+      }
+    });
+  }, []);
 
   return (
     <div className="App">
       <button onClick={handleButton}>Login</button>
-      <div>
-        <button onClick={handleDump}>Dump</button>
-      </div>
-      {tabState}
+      <div>Dump</div>
+      <pre>{tabState}</pre>
     </div>
   );
 }

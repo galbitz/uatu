@@ -4,8 +4,16 @@ import {
   getAuth,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
+  Unsubscribe,
 } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  collection,
+  getFirestore,
+  onSnapshot,
+  setDoc,
+} from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 import { v4 as uuidv4 } from "uuid";
@@ -281,7 +289,45 @@ const getBrowserId = lazyInit(async () => {
 async function saveTabs() {
   const tabs = await browser.tabs.query({});
   const tabsToSave = tabs.map((tab) => {
-    return { name: tab.title, url: tab.url };
+    return { name: tab.title, url: tab.url, windowId: tab.windowId };
   });
   await browser.storage.local.set({ tabs: tabsToSave });
+
+  if (!auth.currentUser) {
+    return;
+  }
+  const userId = auth.currentUser?.uid;
+  const browserId = await getBrowserId();
+  const documentPath = `users/${userId}/tabdata/${browserId}`;
+  const docRef = doc(db, documentPath);
+  await setDoc(docRef, { data: tabsToSave });
 }
+
+let prevSub: Unsubscribe = () => {};
+
+auth.onAuthStateChanged(async () => {
+  if (auth.currentUser) {
+    const userId = auth.currentUser?.uid;
+    const browserId = await getBrowserId();
+    const documentPath = `users/${userId}/tabdata`;
+    const docRef = collection(db, documentPath);
+
+    //unsubscribe from prev
+    prevSub();
+    prevSub = onSnapshot(docRef, async (result) => {
+      result.docChanges().forEach(async (changedDoc) => {
+        console.log(" doc updated", changedDoc.doc.data());
+
+        try {
+          await browser.runtime.sendMessage({
+            command: "doc-update",
+            data: changedDoc.doc.data().data,
+          });
+        } catch {}
+      });
+    });
+  } else {
+    prevSub();
+    prevSub = () => {};
+  }
+});
