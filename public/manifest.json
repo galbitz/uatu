@@ -2,16 +2,18 @@
   "manifest_version": 3,
   "name": "Tab4",
   "version": "1.0",
+  "description": "Tab4",
   "icons": {
-    "16": "logo192.png",
-    "32": "logo192.png",
-    "48": "logo192.png",
-    "128": "logo192.png"
+    "48": "images/icon-48.png",
+    "96": "images/icon-96.png",
+    "128": "images/icon-128.png",
+    "256": "images/icon-256.png",
+    "512": "images/icon-512.png"
   },
   "action": {},
   "background": {
     "service_worker": "./static/js/background.js",
-    "type": "module"
+    "persistent": false
   },
   "permissions": ["tabs", "tabGroups", "storage"]
 }
