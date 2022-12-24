@@ -12,8 +12,7 @@
   },
   "action": {},
   "background": {
-    "service_worker": "./static/js/background.js",
-    "persistent": false
+    "service_worker": "./static/js/background.js"
   },
   "permissions": ["tabs", "tabGroups", "storage"]
 }
