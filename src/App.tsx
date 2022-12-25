@@ -16,8 +16,22 @@ import {
   Anchor,
   Stack,
 } from "@mantine/core";
+import { auth, db } from "./lib/firebase";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+  signInWithEmailAndPassword,
+  Unsubscribe,
+  User,
+} from "firebase/auth";
+import { FirebaseError } from "firebase/app";
+import { collection, onSnapshot } from "firebase/firestore";
+import { getBrowserId } from "./lib/browser";
+import { resourceLimits } from "worker_threads";
 
 function App() {
+  const [loggedin, setLoggedin] = useState(false);
+
   const [type, toggle] = useToggle(["login", "register"]);
   const form = useForm({
     initialValues: {
@@ -35,33 +49,84 @@ function App() {
   });
 
   const [tabState, setTabState] = useState("");
-  const handleButton = async () => {
-    console.log("send to service worker [login]");
 
-    var response = await browser.runtime.sendMessage({
-      command: "auth-login",
-      e: "galbitz@gmail.com",
-      p: "",
-    });
-    console.log("response from background", response);
+  const [docUpdateUnsubscribe, setDocUpdateUnsubscribe] = useState<Unsubscribe>(
+    () => () => {}
+  );
+
+  const setDocSubscription = async (user: User | null) => {
+    console.log("setdocsub triggered");
+    docUpdateUnsubscribe();
+    if (user) {
+      const userId = user.uid;
+      const browserId = await getBrowserId();
+      const documentPath = `users/${userId}/tabdata`;
+      const docRef = collection(db, documentPath);
+      const unsub = onSnapshot(docRef, async (result) => {
+        console.log("updated snapshot");
+        let stringState = "";
+        result.docs.forEach((current) => {
+          stringState = stringState + JSON.stringify(current.data()?.data);
+        });
+        result.docChanges().forEach(async (changedDoc) => {
+          console.log("doc updated", changedDoc.doc.data());
+        });
+        setTabState(stringState);
+      });
+      setDocUpdateUnsubscribe(() => () => {
+        unsub();
+      });
+    } else {
+      setDocUpdateUnsubscribe(() => () => {});
+    }
   };
 
   useEffect(() => {
-    browser.runtime.onMessage.addListener((msg) => {
-      if (msg.command == "doc-update") {
-        setTabState(JSON.stringify(msg.data));
-      }
+    const unsub = auth.onAuthStateChanged((user) => {
+      setLoggedin(user ? true : false);
+      setDocSubscription(auth.currentUser);
     });
+
+    return unsub;
   }, []);
 
   const handleSubmit = async () => {
     if (type === "login") {
-      await browser.runtime.sendMessage({
-        command: "auth-login",
-        e: form.values.email,
-        p: form.values.password,
+      signInWithEmailAndPassword(
+        auth,
+        form.values.email,
+        form.values.password
+      ).catch((error: FirebaseError) => {
+        form.setFieldError("email", error.code);
       });
     }
+    if (type === "register") {
+      try {
+        var newUser = await createUserWithEmailAndPassword(
+          auth,
+          form.values.email,
+          form.values.password
+        );
+
+        await sendEmailVerification(newUser.user);
+      } catch (error) {
+        if (error instanceof FirebaseError) {
+          form.setFieldError("email", error.code);
+        } else {
+          form.setFieldError("email", JSON.stringify(error));
+        }
+      }
+    }
+  };
+
+  const handleSendVerificationEmail = async () => {
+    if (auth.currentUser) {
+      await sendEmailVerification(auth.currentUser);
+      await auth.signOut();
+    }
+  };
+  const handleLogout = async () => {
+    auth.signOut();
   };
 
   return (
@@ -71,13 +136,14 @@ function App() {
           Welcome to Tab4
         </Text>
 
-        <form
-          onSubmit={form.onSubmit(() => {
-            handleSubmit();
-          })}
-        >
-          <Stack>
-            {/* {type === "register" && (
+        {!loggedin && (
+          <form
+            onSubmit={form.onSubmit(() => {
+              handleSubmit();
+            })}
+          >
+            <Stack>
+              {/* {type === "register" && (
               <TextInput
                 label="Name"
                 placeholder="Your name"
@@ -88,50 +154,49 @@ function App() {
               />
             )} */}
 
-            <TextInput
-              required
-              label="Email"
-              placeholder="your@email.com"
-              value={form.values.email}
-              onChange={(event) =>
-                form.setFieldValue("email", event.currentTarget.value)
-              }
-              error={form.errors.email && "Invalid email"}
-            />
+              <TextInput
+                required
+                label="Email"
+                placeholder="your@email.com"
+                {...form.getInputProps("email")}
+              />
 
-            <PasswordInput
-              required
-              label="Password"
-              placeholder="Your password"
-              value={form.values.password}
-              onChange={(event) =>
-                form.setFieldValue("password", event.currentTarget.value)
-              }
-              error={
-                form.errors.password &&
-                "Password should include at least 6 characters"
-              }
-            />
-          </Stack>
+              <PasswordInput
+                required
+                label="Password"
+                placeholder="Your password"
+                {...form.getInputProps("password")}
+              />
+            </Stack>
 
-          <Group position="apart" mt="xl">
-            <Anchor
-              component="button"
-              type="button"
-              color="dimmed"
-              onClick={() => toggle()}
-              size="xs"
-            >
-              {type === "register"
-                ? "Already have an account? Login"
-                : "Don't have an account? Register"}
-            </Anchor>
-            <Button type="submit">{upperFirst(type)}</Button>
-          </Group>
-        </form>
+            <Group position="apart" mt="xl">
+              <Anchor
+                component="button"
+                type="button"
+                color="dimmed"
+                onClick={() => toggle()}
+                size="xs"
+              >
+                {type === "register"
+                  ? "Already have an account? Login"
+                  : "Don't have an account? Register"}
+              </Anchor>
+              <Button type="submit">{upperFirst(type)}</Button>
+            </Group>
+          </form>
+        )}
+        {loggedin && (
+          <>
+            {auth.currentUser && !auth.currentUser.emailVerified && (
+              <Button onClick={handleSendVerificationEmail}>
+                Resend verification
+              </Button>
+            )}
+            <Button onClick={handleLogout}>Logout</Button>
+          </>
+        )}
       </Paper>
 
-      <button onClick={handleButton}>Login</button>
       <div>Dump1</div>
       <pre>{tabState}</pre>
     </div>

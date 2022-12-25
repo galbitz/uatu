@@ -24,7 +24,7 @@
   },
   "scripts": {
     "start": "craco start",
-    "build": "craco build",
+    "build": "BUILD_PATH='../tab4-app/Shared (Extension)/Resources' craco build",
     "test": "craco test",
     "eject": "react-scripts eject"
   },
