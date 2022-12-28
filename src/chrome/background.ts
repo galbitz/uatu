@@ -47,7 +47,7 @@ try {
 
     const browserInfo = await browser.windows.getAll({ populate: true });
 
-    if (!auth.currentUser || !browserInfo) {
+    if (!auth.currentUser || !auth.currentUser.emailVerified || !browserInfo) {
       return;
     }
 
