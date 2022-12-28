@@ -128,7 +128,14 @@ function App() {
     auth.signOut();
   };
 
-  const handleSelectTab = async (windowId?: number, tabId?: number) => {
+  const handleSelectTab = async (
+    browserId: string,
+    windowId?: number,
+    tabId?: number
+  ) => {
+    if (browserId !== (await getBrowserId())) {
+      return;
+    }
     if (!tabId || !windowId) {
       return;
     }
@@ -215,7 +222,11 @@ function App() {
                         </tr>
                       </thead>
                       {window.tabs?.map((tab) => (
-                        <tr onClick={() => handleSelectTab(window.id, tab.id)}>
+                        <tr
+                          onClick={() =>
+                            handleSelectTab(browserInfo.id, window.id, tab.id)
+                          }
+                        >
                           <td>{tab.id}</td>
                           <td>{tab.title}</td>
                           <td>{tab.url}</td>
