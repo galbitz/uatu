@@ -31,12 +31,11 @@ try {
   );
 
   browser.tabs.onUpdated.addListener(
-    async (
-      tabId: number,
-      changeInfo: { status?: string },
-      tab: browser.Tabs.Tab
-    ) => {
-      if (changeInfo.status === "complete") {
+    async (tabId: number, changeInfo, tab: browser.Tabs.Tab) => {
+      if (
+        changeInfo.status === "complete" ||
+        (!changeInfo.status && (!changeInfo.title || !changeInfo.url))
+      ) {
         console.log("Tab loaded: ", tab.url);
         saveTabs();
       }
