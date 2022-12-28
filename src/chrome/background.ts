@@ -9,11 +9,13 @@ try {
   browser.runtime.onInstalled.addListener((details) => {
     console.log("[background.js] onInstalled", details);
     saveTabs();
+    saveBrowserInfo();
   });
 
   browser.runtime.onStartup.addListener(() => {
     console.log("[background.js] onStartup");
     saveTabs();
+    saveBrowserInfo();
   });
 
   browser.action.onClicked.addListener(async function () {
@@ -42,28 +44,50 @@ try {
     }
   );
 
+  const saveData = async (userId: string, browserId: string, data: any) => {
+    //TODO: move this to firebase lib
+    const documentPath = `users/${userId}/browsers/${browserId}`;
+    const docRef = doc(db, documentPath);
+    try {
+      await setDoc(docRef, data, { merge: true });
+    } catch (exception) {
+      console.log("[background.js] saveData ", exception);
+    }
+  };
+
   const saveTabs = async () => {
     console.log("[background.js] savetabs");
 
     const browserInfo = await browser.windows.getAll({ populate: true });
 
-    if (!auth.currentUser || !auth.currentUser.emailVerified || !browserInfo) {
+    if (!auth.currentUser || !auth.currentUser.emailVerified || !browserInfo)
       return;
-    }
 
-    await browser.storage.local.set({ browser: browserInfo });
+    //await browser.storage.local.set({ browser: browserInfo });
+    const currentBrowser = await getBrowserId();
 
-    //TODO: move this to firebase lib
-    const userId = auth.currentUser.uid;
-    const browserId = await getBrowserId();
-    const documentPath = `users/${userId}/browsers/${browserId}`;
-    const docRef = doc(db, documentPath);
-    try {
-      await setDoc(docRef, { windows: browserInfo });
-    } catch (exception) {
-      console.log("[background.js] savetab ", exception);
-    }
+    await saveData(auth.currentUser.uid, currentBrowser, {
+      windows: browserInfo,
+    });
   };
+
+  const saveBrowserInfo = async () => {
+    if (!auth.currentUser || !auth.currentUser.emailVerified) return;
+
+    const currentBrowser = await getBrowserId();
+    const platformInfo = await browser.runtime.getPlatformInfo();
+
+    saveData(auth.currentUser.uid, currentBrowser, {
+      platformInfo: platformInfo,
+    });
+  };
+
+  auth.onAuthStateChanged(async (user) => {
+    if (user) {
+      await saveTabs();
+      await saveBrowserInfo();
+    }
+  });
 } catch (exception) {
   console.log("[background.js] ", exception);
 }
