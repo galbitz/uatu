@@ -15,6 +15,9 @@ import {
   Checkbox,
   Anchor,
   Stack,
+  Table,
+  MantineProvider,
+  Container,
 } from "@mantine/core";
 import { auth, db } from "./lib/firebase";
 import {
@@ -27,7 +30,6 @@ import {
 import { FirebaseError } from "firebase/app";
 import { collection, onSnapshot } from "firebase/firestore";
 import { getBrowserId } from "./lib/browser";
-import { resourceLimits } from "worker_threads";
 
 function App() {
   const [loggedin, setLoggedin] = useState(false);
@@ -48,7 +50,7 @@ function App() {
     },
   });
 
-  const [tabState, setTabState] = useState("");
+  const [browsersState, setBrowsersState] = useState<any[]>([]);
 
   const [docUpdateUnsubscribe, setDocUpdateUnsubscribe] = useState<Unsubscribe>(
     () => () => {}
@@ -60,18 +62,15 @@ function App() {
     if (user) {
       const userId = user.uid;
       const browserId = await getBrowserId();
-      const documentPath = `users/${userId}/tabdata`;
+      const documentPath = `users/${userId}/browsers`;
       const docRef = collection(db, documentPath);
       const unsub = onSnapshot(docRef, async (result) => {
         console.log("updated snapshot");
-        let stringState = "";
-        result.docs.forEach((current) => {
-          stringState = stringState + JSON.stringify(current.data()?.data);
+
+        const browsers = result.docs.map((doc) => {
+          return { id: doc.id, windows: doc.data().windows };
         });
-        result.docChanges().forEach(async (changedDoc) => {
-          console.log("doc updated", changedDoc.doc.data());
-        });
-        setTabState(stringState);
+        setBrowsersState(browsers);
       });
       setDocUpdateUnsubscribe(() => () => {
         unsub();
@@ -129,77 +128,108 @@ function App() {
     auth.signOut();
   };
 
+  const handleSelectTab = async (windowId?: number, tabId?: number) => {
+    if (!tabId || !windowId) {
+      return;
+    }
+
+    await browser.windows.update(windowId, {
+      focused: true,
+    });
+    await browser.tabs.update(tabId, { active: true });
+  };
+
   return (
-    <div className="App">
-      <Paper radius="md" p="xl" withBorder>
-        <Text size="lg" weight={500}>
-          Welcome to Tab4
-        </Text>
+    <MantineProvider withGlobalStyles withNormalizeCSS>
+      <Stack align="center">
+        <Container>
+          <Paper radius="md" p="xl" withBorder>
+            <Text size="lg" weight={500}>
+              Welcome to Tab4
+            </Text>
 
-        {!loggedin && (
-          <form
-            onSubmit={form.onSubmit(() => {
-              handleSubmit();
-            })}
-          >
-            <Stack>
-              {/* {type === "register" && (
-              <TextInput
-                label="Name"
-                placeholder="Your name"
-                value={form.values.name}
-                onChange={(event) =>
-                  form.setFieldValue("name", event.currentTarget.value)
-                }
-              />
-            )} */}
-
-              <TextInput
-                required
-                label="Email"
-                placeholder="your@email.com"
-                {...form.getInputProps("email")}
-              />
-
-              <PasswordInput
-                required
-                label="Password"
-                placeholder="Your password"
-                {...form.getInputProps("password")}
-              />
-            </Stack>
-
-            <Group position="apart" mt="xl">
-              <Anchor
-                component="button"
-                type="button"
-                color="dimmed"
-                onClick={() => toggle()}
-                size="xs"
+            {!loggedin && (
+              <form
+                onSubmit={form.onSubmit(() => {
+                  handleSubmit();
+                })}
               >
-                {type === "register"
-                  ? "Already have an account? Login"
-                  : "Don't have an account? Register"}
-              </Anchor>
-              <Button type="submit">{upperFirst(type)}</Button>
-            </Group>
-          </form>
-        )}
-        {loggedin && (
-          <>
-            {auth.currentUser && !auth.currentUser.emailVerified && (
-              <Button onClick={handleSendVerificationEmail}>
-                Resend verification
-              </Button>
-            )}
-            <Button onClick={handleLogout}>Logout</Button>
-          </>
-        )}
-      </Paper>
+                <Stack>
+                  <TextInput
+                    required
+                    label="Email"
+                    placeholder="your@email.com"
+                    {...form.getInputProps("email")}
+                  />
 
-      <div>Dump1</div>
-      <pre>{tabState}</pre>
-    </div>
+                  <PasswordInput
+                    required
+                    label="Password"
+                    placeholder="Your password"
+                    {...form.getInputProps("password")}
+                  />
+                </Stack>
+
+                <Group position="apart" mt="xl">
+                  <Anchor
+                    component="button"
+                    type="button"
+                    color="dimmed"
+                    onClick={() => toggle()}
+                    size="xs"
+                  >
+                    {type === "register"
+                      ? "Already have an account? Login"
+                      : "Don't have an account? Register"}
+                  </Anchor>
+                  <Button type="submit">{upperFirst(type)}</Button>
+                </Group>
+              </form>
+            )}
+            {loggedin && (
+              <>
+                {auth.currentUser && !auth.currentUser.emailVerified && (
+                  <Button onClick={handleSendVerificationEmail}>
+                    Resend verification
+                  </Button>
+                )}
+                <Button onClick={handleLogout}>Logout</Button>
+              </>
+            )}
+          </Paper>
+        </Container>
+        <Container>
+          {browsersState.map((browserInfo) => (
+            <>
+              <div>Browser id:{browserInfo.id}</div>
+              {browserInfo.windows.map((window: browser.Windows.Window) => (
+                <>
+                  <div>
+                    Window id: {window.id}
+                    <Table striped withBorder>
+                      <thead>
+                        <tr>
+                          <th>ID</th>
+                          <th>Title</th>
+                          <th>Url</th>
+                        </tr>
+                      </thead>
+                      {window.tabs?.map((tab) => (
+                        <tr onClick={() => handleSelectTab(window.id, tab.id)}>
+                          <td>{tab.id}</td>
+                          <td>{tab.title}</td>
+                          <td>{tab.url}</td>
+                        </tr>
+                      ))}
+                    </Table>
+                  </div>
+                </>
+              ))}
+            </>
+          ))}
+        </Container>
+      </Stack>
+    </MantineProvider>
   );
 }
 
