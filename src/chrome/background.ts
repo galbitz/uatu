@@ -88,9 +88,22 @@ try {
 
   browser.commands.onCommand.addListener(async (command) => {
     console.log(`Command: ${command}`);
-    await browser.tabs.create({
-      url: browser.runtime.getURL("index.html"),
-    });
+
+    const tab = (
+      await browser.tabs.query({
+        url: browser.runtime.getURL("index.html"),
+      })
+    )[0];
+    if (tab && tab.windowId && tab.id) {
+      await browser.windows.update(tab.windowId, {
+        focused: true,
+      });
+      await browser.tabs.update(tab.id, { active: true });
+    } else {
+      await browser.tabs.create({
+        url: browser.runtime.getURL("index.html"),
+      });
+    }
   });
 } catch (exception) {
   console.log("[background.js] ", exception);
