@@ -1,7 +1,7 @@
 import { auth, db } from "../lib/firebase";
 import { getBrowserId } from "../lib/browser";
 import browser from "webextension-polyfill";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 
 export {};
 
@@ -16,13 +16,6 @@ try {
     console.log("[background.js] onStartup");
     saveTabs();
     saveBrowserInfo();
-  });
-
-  browser.action.onClicked.addListener(async function () {
-    console.log("[background.js] onclicked");
-    await browser.tabs.create({
-      url: browser.runtime.getURL("index.html"),
-    });
   });
 
   browser.tabs.onRemoved.addListener(
@@ -49,7 +42,11 @@ try {
     const documentPath = `users/${userId}/browsers/${browserId}`;
     const docRef = doc(db, documentPath);
     try {
-      await setDoc(docRef, data, { merge: true });
+      await setDoc(
+        docRef,
+        { ...data, updatedAt: serverTimestamp() },
+        { merge: true }
+      );
     } catch (exception) {
       console.log("[background.js] saveData ", exception);
     }
@@ -87,6 +84,13 @@ try {
       await saveTabs();
       await saveBrowserInfo();
     }
+  });
+
+  browser.commands.onCommand.addListener(async (command) => {
+    console.log(`Command: ${command}`);
+    await browser.tabs.create({
+      url: browser.runtime.getURL("index.html"),
+    });
   });
 } catch (exception) {
   console.log("[background.js] ", exception);

@@ -10,9 +10,22 @@
     "256": "images/icon-256.png",
     "512": "images/icon-512.png"
   },
-  "action": {},
+  "action": {
+    "default_title": "Configure Tab4",
+    "default_popup": "popup.html"
+  },
   "background": {
     "service_worker": "./static/js/background.js"
   },
-  "permissions": ["tabs", "tabGroups", "storage"]
+  "permissions": ["tabs", "tabGroups", "storage"],
+  "commands": {
+    "open-manager": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+0",
+        "mac": "Command+Shift+0"
+      },
+      "description": "Tab manager",
+      "global": true
+    }
+  }
 }

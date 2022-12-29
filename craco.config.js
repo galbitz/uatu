@@ -1,17 +1,15 @@
 const chunkPlugin = require("./craco-chunk-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 module.exports = {
   webpack: {
     configure: (webpackConfig, { env, paths }) => {
       return {
         ...webpackConfig,
         entry: {
-          main: [
-            env === "development" &&
-              require.resolve("react-dev-utils/webpackHotDevClient"),
-            paths.appIndexJs,
-          ].filter(Boolean),
+          main: [paths.appIndexJs].filter(Boolean),
           background: paths.appSrc + "/chrome/background.ts",
+          popup: paths.appSrc + "/popup/index.tsx",
         },
         output: {
           ...webpackConfig.output,
@@ -22,12 +20,21 @@ module.exports = {
           runtimeChunk: false,
         },
         plugins: [
-          ...webpackConfig.plugins,
+          ...webpackConfig.plugins.filter((element) => {
+            if (!(element instanceof MiniCssExtractPlugin)) return true;
+            return false;
+          }),
+          new MiniCssExtractPlugin({
+            // Options similar to the same options in webpackOptions.output
+            // both options are optional
+            filename: "static/css/[name].css",
+            chunkFilename: "static/css/[name].chunk.css",
+          }),
           new HtmlWebpackPlugin({
             inject: true,
-            chunks: ["options"],
+            chunks: ["popup"],
             template: paths.appHtml,
-            filename: "options.html",
+            filename: "popup.html",
           }),
         ],
       };
