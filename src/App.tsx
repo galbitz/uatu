@@ -1,10 +1,9 @@
+import { BrowserInstance } from "./components/BrowserInstance";
 import { useEffect, useMemo, useState } from "react";
 import "./App.css";
-import browser from "webextension-polyfill";
-import { Stack, Table, MantineProvider, Container, Text } from "@mantine/core";
+import { Stack, MantineProvider, Container, Text } from "@mantine/core";
 import { db } from "./lib/firebase";
 import { collection } from "firebase/firestore";
-import { getBrowserId } from "./lib/browser";
 import { useUserState } from "./lib/useUserState";
 import { useCollection } from "react-firebase-hooks/firestore";
 
@@ -32,24 +31,6 @@ function App() {
     }
   }, [browserSnapshots]);
 
-  const handleSelectTab = async (
-    browserId: string,
-    windowId?: number,
-    tabId?: number
-  ) => {
-    if (browserId !== (await getBrowserId())) {
-      return;
-    }
-    if (!tabId || !windowId) {
-      return;
-    }
-
-    await browser.windows.update(windowId, {
-      focused: true,
-    });
-    await browser.tabs.update(tabId, { active: true });
-  };
-
   if (userLoading) return <Text>Authenticating...</Text>;
   if (!loggedIn) return <Text>Please log in first.</Text>;
   if (loading) return <Text>Loading</Text>;
@@ -58,39 +39,9 @@ function App() {
   return (
     <MantineProvider withGlobalStyles withNormalizeCSS>
       <Stack align="center">
-        <Container></Container>
         <Container>
-          {browsersState.map((browserInfo) => (
-            <>
-              <div>Browser id:{browserInfo.id}</div>
-              {browserInfo.windows.map((window: browser.Windows.Window) => (
-                <>
-                  <div>
-                    Window id: {window.id}
-                    <Table striped withBorder>
-                      <thead>
-                        <tr>
-                          <th>ID</th>
-                          <th>Title</th>
-                          <th>Url</th>
-                        </tr>
-                      </thead>
-                      {window.tabs?.map((tab) => (
-                        <tr
-                          onClick={() =>
-                            handleSelectTab(browserInfo.id, window.id, tab.id)
-                          }
-                        >
-                          <td>{tab.id}</td>
-                          <td>{tab.title}</td>
-                          <td>{tab.url}</td>
-                        </tr>
-                      ))}
-                    </Table>
-                  </div>
-                </>
-              ))}
-            </>
+          {browsersState.map((browserInstance) => (
+            <BrowserInstance instance={browserInstance}></BrowserInstance>
           ))}
         </Container>
       </Stack>

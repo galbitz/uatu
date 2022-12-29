@@ -1,5 +1,5 @@
 import { auth, db } from "../lib/firebase";
-import { getBrowserId } from "../lib/browser";
+import { focusTab, getBrowserId } from "../lib/browser";
 import browser from "webextension-polyfill";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 
@@ -95,10 +95,7 @@ try {
       })
     )[0];
     if (tab && tab.windowId && tab.id) {
-      await browser.windows.update(tab.windowId, {
-        focused: true,
-      });
-      await browser.tabs.update(tab.id, { active: true });
+      focusTab(tab.windowId, tab.id);
     } else {
       await browser.tabs.create({
         url: browser.runtime.getURL("index.html"),

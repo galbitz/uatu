@@ -18,3 +18,14 @@ export const getBrowserId = lazyInit(async () => {
 
   return newBrowserId;
 });
+
+export const focusTab = async (windowId?: number, tabId?: number) => {
+  if (!tabId || !windowId) {
+    return;
+  }
+
+  await browser.windows.update(windowId, {
+    focused: true,
+  });
+  await browser.tabs.update(tabId, { active: true });
+};
