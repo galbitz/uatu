@@ -19,6 +19,8 @@ import {
 import { auth } from "../lib/firebase";
 import { useUserState } from "../lib/useUserState";
 import browser from "webextension-polyfill";
+import { getOpenShortcut } from "../lib/browser";
+import { useEffect, useState } from "react";
 
 export const Login = () => {
   const { userLoading, loggedIn } = useUserState();
@@ -83,6 +85,16 @@ export const Login = () => {
     });
   };
 
+  const [openShortCutText, setOpenShortCutText] = useState<String>("");
+  useEffect(() => {
+    const updateShortcut = async () => {
+      const openShortCut = await getOpenShortcut();
+      setOpenShortCutText(openShortCut ? `[${openShortCut}]` : "");
+    };
+
+    updateShortcut();
+  }, []);
+
   if (userLoading) return <></>;
 
   return (
@@ -143,7 +155,9 @@ export const Login = () => {
             </>
           ) : (
             <>
-              <Button onClick={handleOpenManager}>Open Tab Manager</Button>
+              <Button onClick={handleOpenManager}>
+                Open Tab Manager {openShortCutText}
+              </Button>
               <Button onClick={handleLogout}>Logout</Button>
             </>
           )}

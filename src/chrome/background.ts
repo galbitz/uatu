@@ -1,5 +1,5 @@
 import { auth, db } from "../lib/firebase";
-import { focusTab, getBrowserId } from "../lib/browser";
+import { focusTab, getBrowserId, TAB_MANAGER_COMMAND } from "../lib/browser";
 import browser from "webextension-polyfill";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 
@@ -88,6 +88,9 @@ try {
 
   browser.commands.onCommand.addListener(async (command) => {
     console.log(`Command: ${command}`);
+    if (command !== TAB_MANAGER_COMMAND) {
+      return;
+    }
 
     const tab = (
       await browser.tabs.query({

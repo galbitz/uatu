@@ -1,7 +1,7 @@
 import { BrowserInstance } from "./components/BrowserInstance";
 import { useEffect, useMemo, useState } from "react";
 import "./App.css";
-import { Stack, MantineProvider, Container, Text } from "@mantine/core";
+import { Stack, MantineProvider, Text } from "@mantine/core";
 import { db } from "./lib/firebase";
 import { collection } from "firebase/firestore";
 import { useUserState } from "./lib/useUserState";
@@ -39,11 +39,9 @@ function App() {
   return (
     <MantineProvider withGlobalStyles withNormalizeCSS>
       <Stack align="center">
-        <Container>
-          {browsersState.map((browserInstance) => (
-            <BrowserInstance instance={browserInstance}></BrowserInstance>
-          ))}
-        </Container>
+        {browsersState.map((browserInstance) => (
+          <BrowserInstance instance={browserInstance}></BrowserInstance>
+        ))}
       </Stack>
     </MantineProvider>
   );

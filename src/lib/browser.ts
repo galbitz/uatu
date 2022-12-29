@@ -29,3 +29,17 @@ export const focusTab = async (windowId?: number, tabId?: number) => {
   });
   await browser.tabs.update(tabId, { active: true });
 };
+
+export const TAB_MANAGER_COMMAND: string = "open-manager";
+
+export const getOpenShortcut = async () => {
+  const commands = await browser.commands.getAll();
+  const openCommand = commands.find(
+    (command) => command.name === TAB_MANAGER_COMMAND
+  );
+  if (openCommand) {
+    return openCommand.shortcut;
+  }
+
+  return;
+};
