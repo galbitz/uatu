@@ -1,10 +1,10 @@
-import { Container } from "@mantine/core";
+import { Container, Text } from "@mantine/core";
 import browser from "webextension-polyfill";
 import { BrowserWindow } from "./BrowserWindow";
 export const BrowserInstance = ({ instance }: { instance: any }) => {
   return (
     <Container>
-      <div>Browser id:{instance.id}</div>
+      <Text>Browser id:{instance.id}</Text>
       {instance.windows.map((browserWindow: browser.Windows.Window) => {
         return (
           <BrowserWindow

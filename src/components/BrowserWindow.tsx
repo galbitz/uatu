@@ -1,6 +1,7 @@
-import { Table, Text } from "@mantine/core";
+import { ActionIcon } from "@mantine/core";
 import browser from "webextension-polyfill";
 import { focusTab, getBrowserId } from "../lib/browser";
+import { IconExternalLink } from "@tabler/icons";
 export const BrowserWindow = ({
   browserId,
   browserWindow,
@@ -19,29 +20,48 @@ export const BrowserWindow = ({
     focusTab(windowId, tabId);
   };
 
-  console.log("broserId:", browserId);
-
   return (
-    <div>
-      <Text>Window id: {browserWindow.id}</Text>
-      <Table striped withBorder>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Title</th>
-            <th>Url</th>
-          </tr>
-        </thead>
+    <div style={{ maxWidth: "960px" }}>
+      <div style={{ display: "flex" }} className="header">
+        <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>
+          Window id: {browserWindow.id}
+        </span>
+      </div>
+      <div
+        style={{ display: "block", padding: "0", maxWidth: "100%" }}
+        className="tabs"
+      >
         {browserWindow.tabs?.map((tab) => (
-          <tr
-            onClick={() => handleSelectTab(browserId, browserWindow.id, tab.id)}
+          <div
+            style={{ display: "flex", maxWidth: "100%" }}
+            className="tab"
+            data-id={tab.id}
           >
-            <td>{tab.id}</td>
-            <td>{tab.title}</td>
-            <td>{tab.url}</td>
-          </tr>
+            <div
+              style={{
+                width: "100%",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+              onClick={() => handleSelectTab(browserId, tab.windowId, tab.id)}
+            >
+              <span>{tab.title}</span>
+            </div>
+            <div
+              style={{
+                width: "25px",
+                overflow: "hidden",
+                whiteSpace: "nowrap",
+              }}
+            >
+              <ActionIcon component="a" href={tab.url} target="_blank">
+                <IconExternalLink size={18} />
+              </ActionIcon>
+            </div>
+          </div>
         ))}
-      </Table>
+      </div>
     </div>
   );
 };

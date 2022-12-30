@@ -38,7 +38,7 @@ function App() {
 
   return (
     <MantineProvider withGlobalStyles withNormalizeCSS>
-      <Stack align="center">
+      <Stack style={{ width: "960px" }}>
         {browsersState.map((browserInstance) => (
           <BrowserInstance instance={browserInstance}></BrowserInstance>
         ))}
