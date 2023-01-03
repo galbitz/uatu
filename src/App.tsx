@@ -40,7 +40,10 @@ function App() {
     <MantineProvider withGlobalStyles withNormalizeCSS>
       <Stack style={{ width: "960px" }}>
         {browsersState.map((browserInstance) => (
-          <BrowserInstance instance={browserInstance}></BrowserInstance>
+          <BrowserInstance
+            key={browserInstance.id}
+            instance={browserInstance}
+          ></BrowserInstance>
         ))}
       </Stack>
     </MantineProvider>

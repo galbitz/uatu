@@ -1,5 +1,5 @@
 import { auth, db } from "../lib/firebase";
-import { focusTab, getBrowserId, TAB_MANAGER_COMMAND } from "../lib/browser";
+import { getBrowserId, openManager, TAB_MANAGER_COMMAND } from "../lib/browser";
 import browser from "webextension-polyfill";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 
@@ -92,18 +92,7 @@ try {
       return;
     }
 
-    const tab = (
-      await browser.tabs.query({
-        url: browser.runtime.getURL("index.html"),
-      })
-    )[0];
-    if (tab && tab.windowId && tab.id) {
-      focusTab(tab.windowId, tab.id);
-    } else {
-      await browser.tabs.create({
-        url: browser.runtime.getURL("index.html"),
-      });
-    }
+    openManager();
   });
 } catch (exception) {
   console.log("[background.js] ", exception);

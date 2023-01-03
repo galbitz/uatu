@@ -18,8 +18,7 @@ import {
 } from "firebase/auth";
 import { auth } from "../lib/firebase";
 import { useUserState } from "../lib/useUserState";
-import browser from "webextension-polyfill";
-import { getOpenShortcut } from "../lib/browser";
+import { getOpenShortcut, openManager } from "../lib/browser";
 import { useEffect, useState } from "react";
 
 export const Login = () => {
@@ -80,9 +79,7 @@ export const Login = () => {
   };
 
   const handleOpenManager = async () => {
-    await browser.tabs.create({
-      url: browser.runtime.getURL("index.html"),
-    });
+    openManager();
   };
 
   const [openShortCutText, setOpenShortCutText] = useState<String>("");
