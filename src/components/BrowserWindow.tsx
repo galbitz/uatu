@@ -1,7 +1,9 @@
 import { ActionIcon, Table, Text } from "@mantine/core";
 import type browser from "webextension-polyfill";
 import { focusTab, getBrowserId } from "../lib/browser";
-import { IconExternalLink } from "@tabler/icons";
+import { IconClipboardCopy, IconExternalLink } from "@tabler/icons";
+import copy from "copy-to-clipboard";
+
 export const BrowserWindow = ({
   browserId,
   browserWindow,
@@ -23,11 +25,11 @@ export const BrowserWindow = ({
   return (
     <div>
       <div>Window id: {browserWindow.id}</div>
-      <Table striped style={{ width: "260px", tableLayout: "fixed" }}>
+      <Table striped style={{ width: "960px", tableLayout: "fixed" }}>
         <thead>
           <tr>
             <th>Title</th>
-            <th style={{ width: "40px" }}>Link</th>
+            <th style={{ width: "70px" }}>Link</th>
           </tr>
         </thead>
         <tbody>
@@ -47,9 +49,19 @@ export const BrowserWindow = ({
                 </Text>
               </td>
               <td>
-                <ActionIcon component="a" href={tab.url} target="_blank">
-                  <IconExternalLink size={18} />
-                </ActionIcon>
+                <div style={{ display: "flex" }}>
+                  <ActionIcon component="a" href={tab.url} target="_blank">
+                    <IconExternalLink size={18} />
+                  </ActionIcon>
+                  <ActionIcon
+                    component="a"
+                    onClick={() => {
+                      copy(tab.url || "");
+                    }}
+                  >
+                    <IconClipboardCopy size={18} />
+                  </ActionIcon>
+                </div>
               </td>
             </tr>
           ))}
