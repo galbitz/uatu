@@ -1,4 +1,4 @@
-import { ActionIcon, Table, Text } from "@mantine/core";
+import { ActionIcon, Space, Table, Text } from "@mantine/core";
 import type browser from "webextension-polyfill";
 import { focusTab, getBrowserId } from "../lib/browser";
 import { IconClipboardCopy, IconExternalLink } from "@tabler/icons";
@@ -24,8 +24,9 @@ export const BrowserWindow = ({
 
   return (
     <div>
-      <div>Window id: {browserWindow.id}</div>
-      <Table striped style={{ width: "960px", tableLayout: "fixed" }}>
+      <Space></Space>
+      <Text fz="lg">Window id: {browserWindow.id}</Text>
+      <Table striped style={{ tableLayout: "fixed" }} withBorder>
         <thead>
           <tr>
             <th>Title</th>

@@ -12,8 +12,11 @@ const getBrowser = lazyInit(async () => {
 });
 
 export const getBrowserId = lazyInit(async () => {
-  const browser: Browser.Browser = await getBrowser();
+  if (process.env.NODE_ENV === "development") {
+    return "77b15e1b-f4a3-4123-a8f3-57f98e53a9f0";
+  }
 
+  const browser: Browser.Browser = await getBrowser();
   const storedbrowserId = (await browser.storage.local.get("browserId"))
     .browserId;
   if (storedbrowserId) {

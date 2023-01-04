@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import "./App.css";
 import { Stack, MantineProvider, Text } from "@mantine/core";
 import { db } from "./lib/firebase";
-import { collection } from "firebase/firestore";
+import { collection, Timestamp } from "firebase/firestore";
 import { useUserState } from "./lib/useUserState";
 import { useCollection } from "react-firebase-hooks/firestore";
 
@@ -25,7 +25,15 @@ function App() {
     if (browserSnapshots) {
       setBrowsersState(
         browserSnapshots.docs.map((doc) => {
-          return { id: doc.id, windows: doc.data().windows };
+          return {
+            id: doc.id,
+            windows: doc.data().windows,
+            platformInfo: doc.data().platformInfo,
+            updatedAt:
+              doc.data().updatedAt instanceof Timestamp
+                ? (doc.data().updatedAt as Timestamp).toDate().toDateString()
+                : "",
+          };
         })
       );
     }
@@ -38,7 +46,7 @@ function App() {
 
   return (
     <MantineProvider withGlobalStyles withNormalizeCSS>
-      <Stack style={{ width: "960px" }}>
+      <Stack>
         {browsersState.map((browserInstance) => (
           <BrowserInstance
             key={browserInstance.id}
