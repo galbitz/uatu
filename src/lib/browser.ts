@@ -63,7 +63,9 @@ export const openManager = async () => {
       url: browser.runtime.getURL("index.html"),
     })
   )[0];
-  if (tab && tab.windowId && tab.id) {
+
+  //TODO: fix weird bug where Safary tab query returns item even if it's not the extension index.html
+  if (tab && tab.windowId && tab.id && tab.url !== "") {
     focusTab(tab.windowId, tab.id);
   } else {
     await browser.tabs.create({
