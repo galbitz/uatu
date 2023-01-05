@@ -97,7 +97,7 @@ export const Login = () => {
   return (
     <Paper radius="md" p="xl" withBorder>
       <Text size="lg" weight={500}>
-        Welcome to Tab4
+        Welcome to Uatu tab viewer
       </Text>
 
       {!loggedIn && (
@@ -153,7 +153,7 @@ export const Login = () => {
           ) : (
             <>
               <Button onClick={handleOpenManager}>
-                Open Tab Manager {openShortCutText}
+                Open Uatu Tab View {openShortCutText}
               </Button>
               <Button onClick={handleLogout}>Logout</Button>
             </>

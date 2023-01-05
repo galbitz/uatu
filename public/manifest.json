@@ -1,15 +1,15 @@
 {
   "manifest_version": 3,
-  "name": "Tab4",
-  "version": "1.0",
-  "description": "Tab4",
+  "name": "Uatu",
+  "version": "1.0.0",
+  "description": "Uatu displays open tabs across browsers and platforms",
   "icons": {
     "16": "images/icon-16.png",
     "48": "images/icon-64.png",
     "128": "images/icon-128.png"
   },
   "action": {
-    "default_title": "Configure Tab4",
+    "default_title": "Configure Uatu",
     "default_popup": "popup.html",
     "default_icons": {
       "16": "images/icon-16.png",
@@ -27,7 +27,7 @@
         "default": "Ctrl+Shift+0",
         "mac": "Command+Shift+0"
       },
-      "description": "Tab manager",
+      "description": "Open Uatu tab view",
       "global": true
     }
   }
