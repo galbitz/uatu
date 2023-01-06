@@ -7,6 +7,7 @@
     "@mantine/core": "^5.10.0",
     "@mantine/form": "^5.10.0",
     "@mantine/hooks": "^5.10.0",
+    "@sentry/react": "^7.29.0",
     "@tabler/icons": "^1.119.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
@@ -26,8 +27,8 @@
     "web-vitals": "^3.1.0"
   },
   "scripts": {
-    "start": "craco start",
-    "build": "craco build",
+    "start": "node ./scripts/setenv.mjs craco start",
+    "build": "node ./scripts/setenv.mjs craco build",
     "test": "craco test",
     "eject": "react-scripts eject"
   },
@@ -52,6 +53,8 @@
   "devDependencies": {
     "@types/uuid": "^9.0.0",
     "@types/webextension-polyfill": "^0.9.2",
+    "shelljs": "^0.8.5",
+    "simple-git": "^3.15.1",
     "webextension-polyfill": "^0.10.0"
   }
 }
