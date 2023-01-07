@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:/Users/gabor/code/tab4-app/tab4.xcodeproj">
+      location = "self:/Users/gabor/code/uatu/wrapper-app/uatu.xcodeproj">
    </FileRef>
 </Workspace>

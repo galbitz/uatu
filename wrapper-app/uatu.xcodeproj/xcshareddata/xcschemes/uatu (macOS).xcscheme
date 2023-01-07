@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "1471E7AB295555FE0099367D"
-               BuildableName = "tab4.app"
-               BlueprintName = "tab4 (iOS)"
-               ReferencedContainer = "container:tab4.xcodeproj">
+               BlueprintIdentifier = "1471E7BD295555FE0099367D"
+               BuildableName = "uatu.app"
+               BlueprintName = "uatu (macOS)"
+               ReferencedContainer = "container:uatu.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -44,10 +44,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "1471E7AB295555FE0099367D"
-            BuildableName = "tab4.app"
-            BlueprintName = "tab4 (iOS)"
-            ReferencedContainer = "container:tab4.xcodeproj">
+            BlueprintIdentifier = "1471E7BD295555FE0099367D"
+            BuildableName = "uatu.app"
+            BlueprintName = "uatu (macOS)"
+            ReferencedContainer = "container:uatu.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -61,10 +61,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "1471E7AB295555FE0099367D"
-            BuildableName = "tab4.app"
-            BlueprintName = "tab4 (iOS)"
-            ReferencedContainer = "container:tab4.xcodeproj">
+            BlueprintIdentifier = "1471E7BD295555FE0099367D"
+            BuildableName = "uatu.app"
+            BlueprintName = "uatu (macOS)"
+            ReferencedContainer = "container:uatu.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

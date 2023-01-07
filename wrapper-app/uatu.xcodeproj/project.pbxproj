@@ -13,8 +13,8 @@
 		1471E7B8295555FE0099367D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1471E7B6295555FE0099367D /* Main.storyboard */; };
 		1471E7C1295555FE0099367D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1471E7C0295555FE0099367D /* AppDelegate.swift */; };
 		1471E7C4295555FE0099367D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1471E7C2295555FE0099367D /* Main.storyboard */; };
-		1471E7CB295555FE0099367D /* tab4 Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 1471E7CA295555FE0099367D /* tab4 Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		1471E7D5295555FE0099367D /* tab4 Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 1471E7D4295555FE0099367D /* tab4 Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		1471E7CB295555FE0099367D /* uatu Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 1471E7CA295555FE0099367D /* uatu Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		1471E7D5295555FE0099367D /* uatu Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 1471E7D4295555FE0099367D /* uatu Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1471E7DB295555FE0099367D /* Main.html in Resources */ = {isa = PBXBuildFile; fileRef = 1471E796295555FD0099367D /* Main.html */; };
 		1471E7DC295555FE0099367D /* Main.html in Resources */ = {isa = PBXBuildFile; fileRef = 1471E796295555FD0099367D /* Main.html */; };
 		1471E7DF295555FE0099367D /* Style.css in Resources */ = {isa = PBXBuildFile; fileRef = 1471E799295555FD0099367D /* Style.css */; };
@@ -69,7 +69,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				1471E7CB295555FE0099367D /* tab4 Extension.appex in Embed Foundation Extensions */,
+				1471E7CB295555FE0099367D /* uatu Extension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -80,7 +80,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				1471E7D5295555FE0099367D /* tab4 Extension.appex in Embed Foundation Extensions */,
+				1471E7D5295555FE0099367D /* uatu Extension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -94,19 +94,19 @@
 		1471E79B295555FD0099367D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		1471E79C295555FE0099367D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1471E79E295555FE0099367D /* SafariWebExtensionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariWebExtensionHandler.swift; sourceTree = "<group>"; };
-		1471E7AC295555FE0099367D /* tab4.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = tab4.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1471E7AC295555FE0099367D /* uatu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = uatu.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1471E7AF295555FE0099367D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1471E7B1295555FE0099367D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		1471E7B4295555FE0099367D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1471E7B7295555FE0099367D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		1471E7B9295555FE0099367D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		1471E7BE295555FE0099367D /* tab4.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = tab4.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1471E7BE295555FE0099367D /* uatu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = uatu.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1471E7C0295555FE0099367D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1471E7C3295555FE0099367D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		1471E7C5295555FE0099367D /* tab4-app.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "tab4-app.entitlements"; sourceTree = "<group>"; };
-		1471E7CA295555FE0099367D /* tab4 Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "tab4 Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1471E7CA295555FE0099367D /* uatu Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "uatu Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1471E7CF295555FE0099367D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		1471E7D4295555FE0099367D /* tab4 Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "tab4 Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1471E7D4295555FE0099367D /* uatu Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "uatu Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1471E7D9295555FE0099367D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1471E7DA295555FE0099367D /* tab4-app.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "tab4-app.entitlements"; sourceTree = "<group>"; };
 		14739044296683C9007CC8D6 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
@@ -212,10 +212,10 @@
 		1471E7AD295555FE0099367D /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1471E7AC295555FE0099367D /* tab4.app */,
-				1471E7BE295555FE0099367D /* tab4.app */,
-				1471E7CA295555FE0099367D /* tab4 Extension.appex */,
-				1471E7D4295555FE0099367D /* tab4 Extension.appex */,
+				1471E7AC295555FE0099367D /* uatu.app */,
+				1471E7BE295555FE0099367D /* uatu.app */,
+				1471E7CA295555FE0099367D /* uatu Extension.appex */,
+				1471E7D4295555FE0099367D /* uatu Extension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -262,9 +262,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1471E7AB295555FE0099367D /* tab4 (iOS) */ = {
+		1471E7AB295555FE0099367D /* uatu (iOS) */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1471E7FF295555FE0099367D /* Build configuration list for PBXNativeTarget "tab4 (iOS)" */;
+			buildConfigurationList = 1471E7FF295555FE0099367D /* Build configuration list for PBXNativeTarget "uatu (iOS)" */;
 			buildPhases = (
 				1471E7A8295555FE0099367D /* Sources */,
 				1471E7A9295555FE0099367D /* Frameworks */,
@@ -276,14 +276,14 @@
 			dependencies = (
 				1471E7CD295555FE0099367D /* PBXTargetDependency */,
 			);
-			name = "tab4 (iOS)";
+			name = "uatu (iOS)";
 			productName = "tab4-app (iOS)";
-			productReference = 1471E7AC295555FE0099367D /* tab4.app */;
+			productReference = 1471E7AC295555FE0099367D /* uatu.app */;
 			productType = "com.apple.product-type.application";
 		};
-		1471E7BD295555FE0099367D /* tab4 (macOS) */ = {
+		1471E7BD295555FE0099367D /* uatu (macOS) */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1471E806295555FE0099367D /* Build configuration list for PBXNativeTarget "tab4 (macOS)" */;
+			buildConfigurationList = 1471E806295555FE0099367D /* Build configuration list for PBXNativeTarget "uatu (macOS)" */;
 			buildPhases = (
 				1471E7BA295555FE0099367D /* Sources */,
 				1471E7BB295555FE0099367D /* Frameworks */,
@@ -295,14 +295,14 @@
 			dependencies = (
 				1471E7D7295555FE0099367D /* PBXTargetDependency */,
 			);
-			name = "tab4 (macOS)";
+			name = "uatu (macOS)";
 			productName = "tab4-app (macOS)";
-			productReference = 1471E7BE295555FE0099367D /* tab4.app */;
+			productReference = 1471E7BE295555FE0099367D /* uatu.app */;
 			productType = "com.apple.product-type.application";
 		};
-		1471E7C9295555FE0099367D /* tab4 Extension (iOS) */ = {
+		1471E7C9295555FE0099367D /* uatu Extension (iOS) */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1471E7FB295555FE0099367D /* Build configuration list for PBXNativeTarget "tab4 Extension (iOS)" */;
+			buildConfigurationList = 1471E7FB295555FE0099367D /* Build configuration list for PBXNativeTarget "uatu Extension (iOS)" */;
 			buildPhases = (
 				1471E7C6295555FE0099367D /* Sources */,
 				1471E7C7295555FE0099367D /* Frameworks */,
@@ -312,14 +312,14 @@
 			);
 			dependencies = (
 			);
-			name = "tab4 Extension (iOS)";
+			name = "uatu Extension (iOS)";
 			productName = "tab4-app Extension (iOS)";
-			productReference = 1471E7CA295555FE0099367D /* tab4 Extension.appex */;
+			productReference = 1471E7CA295555FE0099367D /* uatu Extension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
-		1471E7D3295555FE0099367D /* tab4 Extension (macOS) */ = {
+		1471E7D3295555FE0099367D /* uatu Extension (macOS) */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1471E802295555FE0099367D /* Build configuration list for PBXNativeTarget "tab4 Extension (macOS)" */;
+			buildConfigurationList = 1471E802295555FE0099367D /* Build configuration list for PBXNativeTarget "uatu Extension (macOS)" */;
 			buildPhases = (
 				1471E7D0295555FE0099367D /* Sources */,
 				1471E7D1295555FE0099367D /* Frameworks */,
@@ -329,9 +329,9 @@
 			);
 			dependencies = (
 			);
-			name = "tab4 Extension (macOS)";
+			name = "uatu Extension (macOS)";
 			productName = "tab4-app Extension (macOS)";
-			productReference = 1471E7D4295555FE0099367D /* tab4 Extension.appex */;
+			productReference = 1471E7D4295555FE0099367D /* uatu Extension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
@@ -358,7 +358,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 1471E793295555FD0099367D /* Build configuration list for PBXProject "tab4" */;
+			buildConfigurationList = 1471E793295555FD0099367D /* Build configuration list for PBXProject "uatu" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -371,10 +371,10 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				1471E7AB295555FE0099367D /* tab4 (iOS) */,
-				1471E7BD295555FE0099367D /* tab4 (macOS) */,
-				1471E7C9295555FE0099367D /* tab4 Extension (iOS) */,
-				1471E7D3295555FE0099367D /* tab4 Extension (macOS) */,
+				1471E7AB295555FE0099367D /* uatu (iOS) */,
+				1471E7BD295555FE0099367D /* uatu (macOS) */,
+				1471E7C9295555FE0099367D /* uatu Extension (iOS) */,
+				1471E7D3295555FE0099367D /* uatu Extension (macOS) */,
 			);
 		};
 /* End PBXProject section */
@@ -478,12 +478,12 @@
 /* Begin PBXTargetDependency section */
 		1471E7CD295555FE0099367D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 1471E7C9295555FE0099367D /* tab4 Extension (iOS) */;
+			target = 1471E7C9295555FE0099367D /* uatu Extension (iOS) */;
 			targetProxy = 1471E7CC295555FE0099367D /* PBXContainerItemProxy */;
 		};
 		1471E7D7295555FE0099367D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 1471E7D3295555FE0099367D /* tab4 Extension (macOS) */;
+			target = 1471E7D3295555FE0099367D /* uatu Extension (macOS) */;
 			targetProxy = 1471E7D6295555FE0099367D /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -641,7 +641,7 @@
 				DEVELOPMENT_TEAM = N56KA9PKX9;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "iOS (Extension)/Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "tab4 Extension";
+				INFOPLIST_KEY_CFBundleDisplayName = "Uatu Extension";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -654,8 +654,8 @@
 					"-framework",
 					SafariServices,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "io.star4.tab4-app.Extension";
-				PRODUCT_NAME = "tab4 Extension";
+				PRODUCT_BUNDLE_IDENTIFIER = io.star4.uatu.Extension;
+				PRODUCT_NAME = "uatu Extension";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -672,7 +672,7 @@
 				DEVELOPMENT_TEAM = N56KA9PKX9;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "iOS (Extension)/Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "tab4 Extension";
+				INFOPLIST_KEY_CFBundleDisplayName = "Uatu Extension";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -685,8 +685,8 @@
 					"-framework",
 					SafariServices,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "io.star4.tab4-app.Extension";
-				PRODUCT_NAME = "tab4 Extension";
+				PRODUCT_BUNDLE_IDENTIFIER = io.star4.uatu.Extension;
+				PRODUCT_NAME = "uatu Extension";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -707,7 +707,7 @@
 				DEVELOPMENT_TEAM = N56KA9PKX9;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "iOS (App)/Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = tab4;
+				INFOPLIST_KEY_CFBundleDisplayName = Uatu;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -726,8 +726,8 @@
 					"-framework",
 					WebKit,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "io.star4.tab4-app";
-				PRODUCT_NAME = tab4;
+				PRODUCT_BUNDLE_IDENTIFIER = io.star4.uatu;
+				PRODUCT_NAME = uatu;
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -746,7 +746,7 @@
 				DEVELOPMENT_TEAM = N56KA9PKX9;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "iOS (App)/Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = tab4;
+				INFOPLIST_KEY_CFBundleDisplayName = Uatu;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -765,8 +765,8 @@
 					"-framework",
 					WebKit,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "io.star4.tab4-app";
-				PRODUCT_NAME = tab4;
+				PRODUCT_BUNDLE_IDENTIFIER = io.star4.uatu;
+				PRODUCT_NAME = uatu;
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -798,8 +798,8 @@
 					"-framework",
 					SafariServices,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "io.star4.tab4-app.Extension";
-				PRODUCT_NAME = "tab4 Extension";
+				PRODUCT_BUNDLE_IDENTIFIER = io.star4.uatu.Extension;
+				PRODUCT_NAME = "uatu Extension";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -830,8 +830,8 @@
 					"-framework",
 					SafariServices,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "io.star4.tab4-app.Extension";
-				PRODUCT_NAME = "tab4 Extension";
+				PRODUCT_BUNDLE_IDENTIFIER = io.star4.uatu.Extension;
+				PRODUCT_NAME = "uatu Extension";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -851,7 +851,7 @@
 				DEVELOPMENT_TEAM = N56KA9PKX9;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = tab4;
+				INFOPLIST_KEY_CFBundleDisplayName = Uatu;
 				INFOPLIST_KEY_NSMainStoryboardFile = Main;
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -866,8 +866,8 @@
 					"-framework",
 					WebKit,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "io.star4.tab4-app";
-				PRODUCT_NAME = tab4;
+				PRODUCT_BUNDLE_IDENTIFIER = io.star4.uatu;
+				PRODUCT_NAME = uatu;
 				SDKROOT = macosx;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -886,7 +886,7 @@
 				DEVELOPMENT_TEAM = N56KA9PKX9;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = tab4;
+				INFOPLIST_KEY_CFBundleDisplayName = Uatu;
 				INFOPLIST_KEY_NSMainStoryboardFile = Main;
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -901,8 +901,8 @@
 					"-framework",
 					WebKit,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "io.star4.tab4-app";
-				PRODUCT_NAME = tab4;
+				PRODUCT_BUNDLE_IDENTIFIER = io.star4.uatu;
+				PRODUCT_NAME = uatu;
 				SDKROOT = macosx;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -912,7 +912,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1471E793295555FD0099367D /* Build configuration list for PBXProject "tab4" */ = {
+		1471E793295555FD0099367D /* Build configuration list for PBXProject "uatu" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1471E7F9295555FE0099367D /* Debug */,
@@ -921,7 +921,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1471E7FB295555FE0099367D /* Build configuration list for PBXNativeTarget "tab4 Extension (iOS)" */ = {
+		1471E7FB295555FE0099367D /* Build configuration list for PBXNativeTarget "uatu Extension (iOS)" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1471E7FC295555FE0099367D /* Debug */,
@@ -930,7 +930,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1471E7FF295555FE0099367D /* Build configuration list for PBXNativeTarget "tab4 (iOS)" */ = {
+		1471E7FF295555FE0099367D /* Build configuration list for PBXNativeTarget "uatu (iOS)" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1471E800295555FE0099367D /* Debug */,
@@ -939,7 +939,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1471E802295555FE0099367D /* Build configuration list for PBXNativeTarget "tab4 Extension (macOS)" */ = {
+		1471E802295555FE0099367D /* Build configuration list for PBXNativeTarget "uatu Extension (macOS)" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1471E803295555FE0099367D /* Debug */,
@@ -948,7 +948,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1471E806295555FE0099367D /* Build configuration list for PBXNativeTarget "tab4 (macOS)" */ = {
+		1471E806295555FE0099367D /* Build configuration list for PBXNativeTarget "uatu (macOS)" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1471E807295555FE0099367D /* Debug */,
