@@ -1,17 +1,16 @@
 import { v4 as uuidv4 } from "uuid";
 import type Browser from "webextension-polyfill";
 
-//TODO: find better pattern
-const lazyInit = (fn: any) => {
-  let prom: any = undefined;
-  return () => (prom = prom || fn());
+const evaulateOnce = <T>(fn: () => T) => {
+  let promise: T | undefined = undefined;
+  return () => (promise = promise || fn());
 };
 
-const getBrowser = lazyInit(async () => {
+const getBrowser = evaulateOnce(async () => {
   return await import("webextension-polyfill");
 });
 
-export const getBrowserId = lazyInit(async () => {
+export const getBrowserId = evaulateOnce(async () => {
   if (process.env.NODE_ENV === "development") {
     return "77b15e1b-f4a3-4123-a8f3-57f98e53a9f0";
   }
