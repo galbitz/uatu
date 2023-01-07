@@ -1,84 +1,25 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import {
-  getAuth,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  Unsubscribe,
-} from "firebase/auth";
-import {
-  doc,
-  getDoc,
-  collection,
-  getFirestore,
-  onSnapshot,
-  setDoc,
-} from "firebase/firestore";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-import { v4 as uuidv4 } from "uuid";
+import * as Sentry from "@sentry/browser";
+import { auth, db } from "../lib/firebase";
+import { getBrowserId, openManager, TAB_MANAGER_COMMAND } from "../lib/browser";
 import browser from "webextension-polyfill";
-
-// TODO: WRAP EVERYTHING IT TRY CATCH!!!!
-
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyBkvSpDQ7oLbjTQXRDmngzk8KJN_2wHkZM",
-  authDomain: "tab4-5a611.firebaseapp.com",
-  projectId: "tab4-5a611",
-  storageBucket: "tab4-5a611.appspot.com",
-  messagingSenderId: "750779374697",
-  appId: "1:750779374697:web:651a17f1620c98cabad6f8",
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { sentryConfig } from "../lib/sentry";
 
 export {};
-/** Fired when the extension is first installed,
- *  when the extension is updated to a new version,
- *  and when Chrome is updated to a new version. */
+
+Sentry.init(sentryConfig);
+
 browser.runtime.onInstalled.addListener((details) => {
   console.log("[background.js] onInstalled", details);
   saveTabs();
+  saveBrowserInfo();
 });
 
-// browser.runtime.onConnect.addListener((port) => {
-//   console.log("[background.js] onConnect", port);
-// });
-
-// chrome.runtime.onStartup.addListener(() => {
-//   console.log("[background.js] onStartup");
-// });
-
-/**
- *  Sent to the event page just before it is unloaded.
- *  This gives the extension opportunity to do some clean up.
- *  Note that since the page is unloading,
- *  any asynchronous operations started while handling this event
- *  are not guaranteed to complete.
- *  If more activity for the event page occurs before it gets
- *  unloaded the onSuspendCanceled event will
- *  be sent and the page won't be unloaded. */
-// chrome.runtime.onSuspend.addListener(() => {
-//   console.log("[background.js] onSuspend");
-// });
-
-browser.action.onClicked.addListener(async function () {
-  console.log("[background.js] onclicked");
-  await browser.tabs.create({
-    url: browser.runtime.getURL("index.html"),
-  });
-
-  //await dumpTabs();
+browser.runtime.onStartup.addListener(() => {
+  console.log("[background.js] onStartup");
+  saveTabs();
+  saveBrowserInfo();
 });
-
-// async function dumpTabs() {
-//   const tabs = await chrome.tabs.query({});
-//   console.log(tabs);
-// }
 
 browser.tabs.onRemoved.addListener(
   async (tabId: number, removeInfo: object) => {
@@ -88,246 +29,71 @@ browser.tabs.onRemoved.addListener(
 );
 
 browser.tabs.onUpdated.addListener(
-  async (
-    tabId: number,
-    changeInfo: { status?: string },
-    tab: browser.Tabs.Tab
-  ) => {
-    if (changeInfo.status === "complete") {
+  async (tabId: number, changeInfo, tab: browser.Tabs.Tab) => {
+    if (
+      changeInfo.status === "complete" ||
+      (!changeInfo.status && (!changeInfo.title || !changeInfo.url))
+    ) {
       console.log("Tab loaded: ", tab.url);
       saveTabs();
     }
   }
 );
 
-/*
-  Response Calls
-    resp({type: "result", status: "success", data: doc.data(), request: msg});
-    resp({type: "result", status: "error", data: error, request: msg});
-  */
-browser.runtime.onMessage.addListener((msg, sender) => {
-  if (msg.command == "user-auth") {
-    auth.onAuthStateChanged(function (user) {
-      if (user) {
-        // User is signed in.
-        browser.storage.local.set({ authInfo: user });
-        // firebase
-        //   .database()
-        //   .ref("/users/" + user.uid)
-        //   .once("value")
-        //   .then(function (snapshot) {
-        //     console.log(snapshot.val());
-        //     resp({
-        //       type: "result",
-        //       status: "success",
-        //       data: user,
-        //       userObj: snapshot.val(),
-        //     });
-        //   })
-        //   .catch((result) => {
-        //     chrome.storage.local.set({ authInfo: false });
-        //     resp({ type: "result", status: "error", data: false });
-        //   });
-        //resp({ type: "result", status: "error", data: false });
-      } else {
-        // No user is signed in.
-        browser.storage.local.set({ authInfo: false });
-        // return Promise.resolve({
-        //   type: "result",
-        //   status: "error",
-        //   data: false,
-        // });
-      }
-    });
-  }
-
-  //Auth
-  //logout
-  if (msg.command == "auth-logout") {
-    auth.signOut().then(
-      function () {
-        //user logged out...
-        browser.storage.local.set({ authInfo: false });
-        //resp({ type: "result", status: "success", data: false });
-      },
-      function (error) {
-        //logout error....
-        // resp({
-        //   type: "result",
-        //   status: "error",
-        //   data: false,
-        //   message: error,
-        // });
-      }
+const saveData = async (userId: string, browserId: string, data: any) => {
+  //TODO: move this to firebase lib
+  const documentPath = `users/${userId}/browsers/${browserId}`;
+  const docRef = doc(db, documentPath);
+  try {
+    await setDoc(
+      docRef,
+      { ...data, updatedAt: serverTimestamp() },
+      { merge: true }
     );
+  } catch (exception) {
+    console.log("[background.js] saveData ", exception);
   }
-  //Login
-  if (msg.command == "auth-login") {
-    //login user
-    signInWithEmailAndPassword(auth, msg.e, msg.p).catch(function (error) {
-      if (error) {
-        //return error msg...
-        browser.storage.local.set({ authInfo: false });
-        //resp({ type: "result", status: "error", data: false });
-      }
-    });
-    auth.onAuthStateChanged(function (user) {
-      if (user) {
-        //return success user objct...
-        console.log("user login", user);
-        browser.storage.local.set({ authInfo: user });
-        //resp({ type: "result", status: "OK", data: false });
-        // firebase
-        //   .database()
-        //   .ref("/users/" + user.uid)
-        //   .once("value")
-        //   .then(function (snapshot) {
-        //     resp({
-        //       type: "result",
-        //       status: "success",
-        //       data: user,
-        //       userObj: snapshot.val(),
-        //     });
-        //   })
-        //   .catch((result) => {
-        //     chrome.storage.local.set({ authInfo: false });
-        //     resp({ type: "result", status: "error", data: false });
-        //   });
-      }
-    });
-  }
-  //Sign Up
-  if (msg.command == "auth-signup") {
-    //create user
-    ///get user id
-    //make call to lambda
-    browser.storage.local.set({ authInfo: false });
-    auth.signOut();
-    createUserWithEmailAndPassword(auth, msg.e, msg.p).catch(function (error) {
-      // Handle Errors here.
-      browser.storage.local.set({ authInfo: false }); // clear any current session
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      //resp({ type: "signup", status: "error", data: false, message: error });
-    });
-    //complete payment and create user object into database with new uid
-    auth.onAuthStateChanged(function (user) {
-      if (user) {
-        // //user created and logged in ...
-        // //build url...
-        // var urlAWS = "https://ENTER-YOUR-LAMBA-URL-HERE?stripe=true";
-        // urlAWS += "&uid=" + user.uid;
-        // urlAWS += "&email=" + msg.e;
-        // urlAWS += "&token=" + msg.tokenId;
-        // chrome.storage.local.set({ authInfo: user });
-        // //console.log('make call to lambda:', urlAWS);
-        // try {
-        //   //catch any errors
-        //   fetch(urlAWS)
-        //     .then((response) => {
-        //       return response.json(); //convert to json for response...
-        //     })
-        //     .then((res) => {
-        //       //update and create user obj
-        //       firebase
-        //         .database()
-        //         .ref("/users/" + user.uid)
-        //         .set({ stripeId: res });
-        //       //success / update user / and return
-        //       firebase
-        //         .database()
-        //         .ref("/users/" + user.uid)
-        //         .once("value")
-        //         .then(function (snapshot) {
-        //           resp({
-        //             type: "result",
-        //             status: "success",
-        //             data: user,
-        //             userObj: snapshot.val(),
-        //           });
-        //         })
-        //         .catch((result) => {
-        //           chrome.storage.local.set({ authInfo: false });
-        //           resp({ type: "result", status: "error", data: false });
-        //         });
-        //     })
-        //     .catch((error) => {
-        //       console.log(error, "error with payment?");
-        //       chrome.storage.local.set({ authInfo: false });
-        //       resp({ type: "result", status: "error", data: false });
-        //     });
-        // } catch (e) {
-        //   console.log(error, "error with payment?");
-        //   chrome.storage.local.set({ authInfo: false });
-        //   resp({ type: "result", status: "error", data: false });
-        // }
-      }
-    });
-  }
-  return Promise.resolve({ state: "OOOKK" });
-});
-
-//TODO: find better pattern
-const lazyInit = (fn: any) => {
-  let prom: any = undefined;
-  return () => (prom = prom || fn());
 };
 
-const getBrowserId = lazyInit(async () => {
-  const storedbrowserId = (await browser.storage.local.get("browserId"))
-    .browserId;
-  if (storedbrowserId) {
-    return storedbrowserId;
+const saveTabs = async () => {
+  console.log("[background.js] savetabs");
+
+  const browserInfo = await browser.windows.getAll({ populate: true });
+
+  if (!auth.currentUser || !auth.currentUser.emailVerified || !browserInfo)
+    return;
+
+  //await browser.storage.local.set({ browser: browserInfo });
+  const currentBrowser = await getBrowserId();
+
+  await saveData(auth.currentUser.uid, currentBrowser, {
+    windows: browserInfo,
+  });
+};
+
+const saveBrowserInfo = async () => {
+  if (!auth.currentUser || !auth.currentUser.emailVerified) return;
+
+  const currentBrowser = await getBrowserId();
+  const platformInfo = await browser.runtime.getPlatformInfo();
+
+  saveData(auth.currentUser.uid, currentBrowser, {
+    platformInfo: platformInfo,
+  });
+};
+
+auth.onAuthStateChanged(async (user) => {
+  if (user) {
+    await saveTabs();
+    await saveBrowserInfo();
   }
-
-  const newBrowserId = uuidv4();
-  await browser.storage.local.set({ browserId: newBrowserId });
-
-  return newBrowserId;
 });
 
-async function saveTabs() {
-  const tabs = await browser.tabs.query({});
-  const tabsToSave = tabs.map((tab) => {
-    return { name: tab.title, url: tab.url, windowId: tab.windowId };
-  });
-  await browser.storage.local.set({ tabs: tabsToSave });
-
-  if (!auth.currentUser) {
+browser.commands.onCommand.addListener(async (command) => {
+  console.log(`Command: ${command}`);
+  if (command !== TAB_MANAGER_COMMAND) {
     return;
   }
-  const userId = auth.currentUser?.uid;
-  const browserId = await getBrowserId();
-  const documentPath = `users/${userId}/tabdata/${browserId}`;
-  const docRef = doc(db, documentPath);
-  await setDoc(docRef, { data: tabsToSave });
-}
 
-let prevSub: Unsubscribe = () => {};
-
-auth.onAuthStateChanged(async () => {
-  if (auth.currentUser) {
-    const userId = auth.currentUser?.uid;
-    const browserId = await getBrowserId();
-    const documentPath = `users/${userId}/tabdata`;
-    const docRef = collection(db, documentPath);
-
-    //unsubscribe from prev
-    prevSub();
-    prevSub = onSnapshot(docRef, async (result) => {
-      result.docChanges().forEach(async (changedDoc) => {
-        console.log(" doc updated", changedDoc.doc.data());
-
-        try {
-          await browser.runtime.sendMessage({
-            command: "doc-update",
-            data: changedDoc.doc.data().data,
-          });
-        } catch {}
-      });
-    });
-  } else {
-    prevSub();
-    prevSub = () => {};
-  }
+  openManager();
 });

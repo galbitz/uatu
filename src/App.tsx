@@ -1,34 +1,60 @@
-import React, { useEffect, useState } from "react";
+import { BrowserInstance } from "./components/BrowserInstance";
+import { useEffect, useMemo, useState } from "react";
 import "./App.css";
-import browser from "webextension-polyfill";
+import { Stack, MantineProvider, Text } from "@mantine/core";
+import { db } from "./lib/firebase";
+import { collection, Timestamp } from "firebase/firestore";
+import { useUserState } from "./lib/useUserState";
+import { useCollection } from "react-firebase-hooks/firestore";
 
 function App() {
-  const [tabState, setTabState] = useState("");
-  const handleButton = async () => {
-    console.log("send to service worker [login]");
+  const { userLoading, loggedIn, authUser } = useUserState();
 
-    var response = await browser.runtime.sendMessage({
-      command: "auth-login",
-      e: "galbitz@gmail.com",
-      p: "",
-    });
-    console.log("response from background", response);
-  };
+  const browserQuery = useMemo(
+    () => (authUser ? collection(db, `users/${authUser.uid}/browsers`) : null),
+    [authUser]
+  );
 
+  const [browsersState, setBrowsersState] = useState<any[]>([]);
+  const [browserSnapshots, loading, error] = useCollection(browserQuery, {
+    snapshotListenOptions: { includeMetadataChanges: true },
+  });
+
+  //TODO: FirestoreDataConverter
   useEffect(() => {
-    browser.runtime.onMessage.addListener((msg) => {
-      if (msg.command == "doc-update") {
-        setTabState(JSON.stringify(msg.data));
-      }
-    });
-  }, []);
+    if (browserSnapshots) {
+      setBrowsersState(
+        browserSnapshots.docs.map((doc) => {
+          return {
+            id: doc.id,
+            windows: doc.data().windows,
+            platformInfo: doc.data().platformInfo,
+            updatedAt:
+              doc.data().updatedAt instanceof Timestamp
+                ? (doc.data().updatedAt as Timestamp).toDate().toDateString()
+                : "",
+          };
+        })
+      );
+    }
+  }, [browserSnapshots]);
+
+  if (userLoading) return <Text>Authenticating...</Text>;
+  if (!loggedIn) return <Text>Please log in first.</Text>;
+  if (loading) return <Text>Loading</Text>;
+  if (error) return <Text>{error.message}</Text>;
 
   return (
-    <div className="App">
-      <button onClick={handleButton}>Login</button>
-      <div>Dump</div>
-      <pre>{tabState}</pre>
-    </div>
+    <MantineProvider withGlobalStyles withNormalizeCSS>
+      <Stack>
+        {browsersState.map((browserInstance) => (
+          <BrowserInstance
+            key={browserInstance.id}
+            instance={browserInstance}
+          ></BrowserInstance>
+        ))}
+      </Stack>
+    </MantineProvider>
   );
 }
 
