@@ -20,7 +20,7 @@
   "background": {
     "service_worker": "./static/js/background.js"
   },
-  "permissions": ["tabs", "tabGroups", "storage"],
+  "permissions": ["tabs", "storage"],
   "commands": {
     "open-manager": {
       "suggested_key": {
