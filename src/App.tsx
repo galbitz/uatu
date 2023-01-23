@@ -1,43 +1,32 @@
 import { BrowserInstance } from "./components/BrowserInstance";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import "./App.css";
 import { Stack, MantineProvider, Text } from "@mantine/core";
-import { db } from "./lib/firebase";
-import { collection, Timestamp } from "firebase/firestore";
+import { db, browserStateConverter } from "./lib/firebase";
+import { collection } from "firebase/firestore";
 import { useUserState } from "./lib/useUserState";
 import { useCollection } from "react-firebase-hooks/firestore";
+import type { BrowserState } from "./lib/types";
 
 function App() {
   const { userLoading, loggedIn, authUser } = useUserState();
 
   const browserQuery = useMemo(
-    () => (authUser ? collection(db, `users/${authUser.uid}/browsers`) : null),
+    () =>
+      authUser
+        ? collection(db, `users/${authUser.uid}/browsers`).withConverter(
+            browserStateConverter
+          )
+        : null,
     [authUser]
   );
 
-  const [browsersState, setBrowsersState] = useState<any[]>([]);
-  const [browserSnapshots, loading, error] = useCollection(browserQuery, {
-    snapshotListenOptions: { includeMetadataChanges: true },
-  });
-
-  //TODO: FirestoreDataConverter
-  useEffect(() => {
-    if (browserSnapshots) {
-      setBrowsersState(
-        browserSnapshots.docs.map((doc) => {
-          return {
-            id: doc.id,
-            windows: doc.data().windows,
-            platformInfo: doc.data().platformInfo,
-            updatedAt:
-              doc.data().updatedAt instanceof Timestamp
-                ? (doc.data().updatedAt as Timestamp).toDate().toDateString()
-                : "",
-          };
-        })
-      );
+  const [browserSnapshots, loading, error] = useCollection<BrowserState>(
+    browserQuery,
+    {
+      snapshotListenOptions: { includeMetadataChanges: true },
     }
-  }, [browserSnapshots]);
+  );
 
   if (userLoading) return <Text>Authenticating...</Text>;
   if (!loggedIn) return <Text>Please log in first.</Text>;
@@ -47,12 +36,13 @@ function App() {
   return (
     <MantineProvider withGlobalStyles withNormalizeCSS>
       <Stack>
-        {browsersState.map((browserInstance) => (
-          <BrowserInstance
-            key={browserInstance.id}
-            instance={browserInstance}
-          ></BrowserInstance>
-        ))}
+        {browserSnapshots &&
+          browserSnapshots.docs.map((state) => (
+            <BrowserInstance
+              key={state.id}
+              instance={state.data()}
+            ></BrowserInstance>
+          ))}
       </Stack>
     </MantineProvider>
   );

@@ -8,7 +8,7 @@ export const BrowserWindow = ({
   browserId,
   browserWindow,
 }: {
-  browserId: any;
+  browserId: string;
   browserWindow: browser.Windows.Window;
 }) => {
   const handleSelectTab = async (
