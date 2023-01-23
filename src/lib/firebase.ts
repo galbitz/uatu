@@ -1,6 +1,14 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import {
+  DocumentData,
+  getFirestore,
+  QueryDocumentSnapshot,
+  SnapshotOptions,
+  Timestamp,
+  WithFieldValue,
+} from "firebase/firestore";
+import type { BrowserState } from "./types";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBkvSpDQ7oLbjTQXRDmngzk8KJN_2wHkZM",
@@ -15,3 +23,27 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+
+export const browserStateConverter = {
+  toFirestore(browserState: WithFieldValue<BrowserState>): DocumentData {
+    return {
+      windows: browserState.windows,
+      platformInfo: browserState.platformInfo,
+    };
+  },
+  fromFirestore(
+    snapshot: QueryDocumentSnapshot,
+    options: SnapshotOptions
+  ): BrowserState {
+    const data = snapshot.data(options);
+    return {
+      id: snapshot.id,
+      windows: data.windows,
+      platformInfo: data.platformInfo,
+      updatedAt:
+        data.updatedAt instanceof Timestamp
+          ? (data.updatedAt as Timestamp).toDate()
+          : new Date(),
+    };
+  },
+};

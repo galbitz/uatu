@@ -3,7 +3,10 @@ import { useEffect, useState } from "react";
 import type browser from "webextension-polyfill";
 import { getBrowserId } from "../lib/browser";
 import { BrowserWindow } from "./BrowserWindow";
-export const BrowserInstance = ({ instance }: { instance: any }) => {
+import { BrowserState } from "../lib/types";
+import { formatDate } from "../lib/date";
+
+export const BrowserInstance = ({ instance }: { instance: BrowserState }) => {
   const [currentBrowserId, setCurretBrowserId] = useState("");
 
   useEffect(() => {
@@ -22,17 +25,20 @@ export const BrowserInstance = ({ instance }: { instance: any }) => {
         >
           Browser id: {instance.id}{" "}
           {instance?.platformInfo?.os ? `[${instance.platformInfo.os}]` : ""}
-          {instance?.updatedAt ? `[Last updated: ${instance.updatedAt}]` : ""}
+          {instance?.updatedAt
+            ? `[Last updated: ${formatDate(instance.updatedAt)}]`
+            : ""}
         </Text>
-        {instance.windows.map((browserWindow: browser.Windows.Window) => {
-          return (
-            <BrowserWindow
-              key={browserWindow.id}
-              browserId={instance.id}
-              browserWindow={browserWindow}
-            ></BrowserWindow>
-          );
-        })}
+        {instance.windows &&
+          instance.windows.map((browserWindow: browser.Windows.Window) => {
+            return (
+              <BrowserWindow
+                key={browserWindow.id}
+                browserId={instance.id}
+                browserWindow={browserWindow}
+              ></BrowserWindow>
+            );
+          })}
       </Paper>
     </Container>
   );

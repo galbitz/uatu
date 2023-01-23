@@ -4,6 +4,7 @@ import { getBrowserId, openManager, TAB_MANAGER_COMMAND } from "../lib/browser";
 import browser from "webextension-polyfill";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { sentryConfig } from "../lib/sentry";
+import type { BrowserState } from "../lib/types";
 
 export {};
 
@@ -40,7 +41,11 @@ browser.tabs.onUpdated.addListener(
   }
 );
 
-const saveData = async (userId: string, browserId: string, data: any) => {
+const saveData = async (
+  userId: string,
+  browserId: string,
+  data: Partial<BrowserState>
+) => {
   //TODO: move this to firebase lib
   const documentPath = `users/${userId}/browsers/${browserId}`;
   const docRef = doc(db, documentPath);
