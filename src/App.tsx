@@ -1,5 +1,4 @@
 import { BrowserInstance } from "./components/BrowserInstance";
-import { useMemo } from "react";
 import "./App.css";
 import {
   Stack,
@@ -13,33 +12,16 @@ import {
   ColorScheme,
   ColorSchemeProvider,
 } from "@mantine/core";
-import { db, browserStateConverter } from "./lib/firebase";
-import { collection } from "firebase/firestore";
 import { useUserState } from "./lib/useUserState";
-import { useCollection } from "react-firebase-hooks/firestore";
-import type { BrowserState } from "./lib/types";
 import { ViewFooter } from "./components/ViewFooter";
 import { ViewHeader } from "./components/ViewHeader";
 import { useLocalStorage } from "@mantine/hooks";
+import { useBrowserStateCollection } from "./lib/useBrowserStateCollection";
 
 function App() {
-  const { userLoading, loggedIn, authUser } = useUserState();
-  const browserQuery = useMemo(
-    () =>
-      authUser
-        ? collection(db, `users/${authUser.uid}/browsers`).withConverter(
-            browserStateConverter
-          )
-        : null,
-    [authUser]
-  );
+  const { userLoading, loggedIn } = useUserState();
 
-  const [browserSnapshots, loading, error] = useCollection<BrowserState>(
-    browserQuery,
-    {
-      snapshotListenOptions: { includeMetadataChanges: true },
-    }
-  );
+  const { browserSnapshots, loading, error } = useBrowserStateCollection();
 
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
     key: "mantine-color-scheme",
@@ -77,10 +59,10 @@ function App() {
           <Space h={"md"} />
           <Stack>
             {browserSnapshots &&
-              browserSnapshots.docs.map((state) => (
+              browserSnapshots.map((state) => (
                 <BrowserInstance
                   key={state.id}
-                  instance={state.data()}
+                  instance={state}
                 ></BrowserInstance>
               ))}
           </Stack>

@@ -12,6 +12,7 @@ import { useUserState } from "../lib/useUserState";
 import { VerifyEmail } from "./VerifyEmail";
 import { PopupFooter } from "./PopupFooter";
 import { useLocalStorage } from "@mantine/hooks";
+import { NotificationsProvider } from "@mantine/notifications";
 
 function Popup() {
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
@@ -36,17 +37,19 @@ function Popup() {
         withGlobalStyles
         withNormalizeCSS
       >
-        <Space h={"md"}></Space>
-        <Container>
-          <Text align="center" weight={"500"} size={"xl"}>
-            Uatu tab manager
-          </Text>
-        </Container>
-        <Space h={"md"}></Space>
-        {!loggedIn && <Login></Login>}
-        {loggedIn && !userVerified && <VerifyEmail></VerifyEmail>}
-        {userVerified && <Config></Config>}
-        <PopupFooter />
+        <NotificationsProvider>
+          <Space h={"md"}></Space>
+          <Container>
+            <Text align="center" weight={"500"} size={"xl"}>
+              Uatu tab manager
+            </Text>
+          </Container>
+          <Space h={"md"}></Space>
+          {!loggedIn && <Login></Login>}
+          {loggedIn && !userVerified && <VerifyEmail></VerifyEmail>}
+          {userVerified && <Config></Config>}
+          <PopupFooter />
+        </NotificationsProvider>
       </MantineProvider>
     </ColorSchemeProvider>
   );

@@ -1,6 +1,7 @@
 import { User } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { auth } from "./firebase";
+import * as Sentry from "@sentry/react";
 
 export const useUserState = (): {
   userLoading: boolean;
@@ -19,6 +20,12 @@ export const useUserState = (): {
       setAuthUser(user);
       setLoggedIn(user !== null);
       setUserVerified(user !== null && user.emailVerified);
+
+      if (user && user.email) {
+        Sentry.setUser({ email: user.email });
+      } else {
+        Sentry.setUser(null);
+      }
     });
     return unsub;
   }, []);

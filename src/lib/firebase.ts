@@ -36,6 +36,7 @@ export const browserStateConverter = {
     options: SnapshotOptions
   ): BrowserState {
     const data = snapshot.data(options);
+
     return {
       id: snapshot.id,
       windows: data.windows,
@@ -43,6 +44,14 @@ export const browserStateConverter = {
       updatedAt:
         data.updatedAt instanceof Timestamp
           ? (data.updatedAt as Timestamp).toDate()
+          : new Date(),
+      encrypted: data.encryptedData ? true : false,
+      decryptionSuccessful: false,
+      encryptedData: data.encryptedData,
+      name: data.name || snapshot.id,
+      createdAt:
+        data.createdAt instanceof Timestamp
+          ? (data.createdAt as Timestamp).toDate()
           : new Date(),
     };
   },

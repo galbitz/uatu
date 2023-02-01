@@ -8,7 +8,7 @@ module.exports = {
         ...webpackConfig,
         entry: {
           main: [paths.appIndexJs].filter(Boolean),
-          background: paths.appSrc + "/chrome/background.ts",
+          background: paths.appSrc + "/service_worker/background.ts",
           popup: paths.appSrc + "/popup/index.tsx",
         },
         output: {

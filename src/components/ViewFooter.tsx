@@ -1,5 +1,6 @@
 import { Container, createStyles, Group, NavLink, Text } from "@mantine/core";
 import { IconHome2 } from "@tabler/icons";
+import { saveBrowserState } from "../lib/browserStateSaver";
 
 const useStyles = createStyles((theme) => ({
   footer: {
@@ -24,6 +25,11 @@ const useStyles = createStyles((theme) => ({
 
 export const ViewFooter = () => {
   const { classes } = useStyles();
+
+  const handleVersionInfoClick = () => {
+    saveBrowserState();
+  };
+
   return (
     <div className={classes.footer}>
       <Container className={classes.inner}>
@@ -37,7 +43,9 @@ export const ViewFooter = () => {
           />
         </Group>
         <Group>
-          <Text>Build: {process.env.REACT_APP_VERSION}</Text>
+          <Text onClick={handleVersionInfoClick}>
+            Build: {process.env.REACT_APP_VERSION}
+          </Text>
         </Group>
       </Container>
     </div>

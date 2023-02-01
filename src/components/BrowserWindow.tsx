@@ -1,6 +1,6 @@
-import { ActionIcon, Space, Table, Text } from "@mantine/core";
+import { ActionIcon, Divider, Group, Table, Text } from "@mantine/core";
 import type browser from "webextension-polyfill";
-import { focusTab, getBrowserId } from "../lib/browser";
+import BrowserFunctions from "../lib/browser";
 import { IconClipboardCopy, IconExternalLink } from "@tabler/icons";
 import copy from "copy-to-clipboard";
 
@@ -16,16 +16,20 @@ export const BrowserWindow = ({
     windowId?: number,
     tabId?: number
   ) => {
-    if (browserId !== (await getBrowserId())) {
+    if (browserId !== (await BrowserFunctions.getBrowserId())) {
       return;
     }
-    focusTab(windowId, tabId);
+    BrowserFunctions.focusTab(windowId, tabId);
   };
 
   return (
     <div>
-      <Space></Space>
-      <Text fz="lg">Window id: {browserWindow.id}</Text>
+      <Divider my="sm" variant="dashed" />
+      <Group style={{ paddingLeft: 10, paddingBottom: 10 }}>
+        <Text fz="lg" fw={500}>
+          Window id: {browserWindow.id}
+        </Text>
+      </Group>
       <Table striped style={{ tableLayout: "fixed" }} withBorder>
         <thead>
           <tr>
