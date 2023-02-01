@@ -1,7 +1,7 @@
 import { ActionIcon, Divider, Group, Table, Text } from "@mantine/core";
 import type browser from "webextension-polyfill";
 import BrowserFunctions from "../lib/browser";
-import { IconClipboardCopy, IconExternalLink } from "@tabler/icons";
+import { IconClipboardCopy, IconExternalLink } from "@tabler/icons-react";
 import copy from "copy-to-clipboard";
 
 export const BrowserWindow = ({

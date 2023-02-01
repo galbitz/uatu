@@ -1,5 +1,5 @@
 import { Container, createStyles, Group, NavLink, Text } from "@mantine/core";
-import { IconHome2 } from "@tabler/icons";
+import { IconHome2 } from "@tabler/icons-react";
 import { saveBrowserState } from "../lib/browserStateSaver";
 
 const useStyles = createStyles((theme) => ({

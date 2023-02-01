@@ -1,8 +1,8 @@
 import { Group, Button, Text, ActionIcon } from "@mantine/core";
-import { IconTrash } from "@tabler/icons";
+import { IconTrash } from "@tabler/icons-react";
 import { formatDate } from "../lib/date";
 import { BrowserState } from "../lib/types";
-import { IconLock, IconLockOff } from "@tabler/icons";
+import { IconLock, IconLockOff } from "@tabler/icons-react";
 
 export const BrowserHeader = (props: {
   currentBrowser: boolean;

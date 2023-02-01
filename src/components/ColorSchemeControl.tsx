@@ -1,5 +1,5 @@
 import { useMantineColorScheme } from "@mantine/core";
-import { IconSun, IconMoon } from "@tabler/icons";
+import { IconSun, IconMoon } from "@tabler/icons-react";
 import { HeaderControl } from "./HeaderControl";
 
 export function ColorSchemeControl() {

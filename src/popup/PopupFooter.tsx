@@ -1,5 +1,5 @@
 import { Box, Button, Container, Group, NavLink, Space } from "@mantine/core";
-import { IconHome2 } from "@tabler/icons";
+import { IconHome2 } from "@tabler/icons-react";
 import { auth } from "../lib/firebase";
 import { useUserState } from "../lib/useUserState";
 
