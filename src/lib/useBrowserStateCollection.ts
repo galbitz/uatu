@@ -6,6 +6,7 @@ import { decrypt } from "./crypto";
 import { browserStateConverter, db } from "./firebase";
 import { BrowserState } from "./types";
 import { useUserState } from "./useUserState";
+import BrowserFunctions from "./browser";
 
 export const useBrowserStateCollection = () => {
   const { authUser } = useUserState();
@@ -25,6 +26,26 @@ export const useBrowserStateCollection = () => {
       snapshotListenOptions: { includeMetadataChanges: true },
     }
   );
+
+  const compareBrowserStates = (
+    state1: BrowserState,
+    state2: BrowserState,
+    currentBrowserId: string
+  ) => {
+    if (state1.id === currentBrowserId) {
+      return -1;
+    }
+    if (state2.id === currentBrowserId) {
+      return 1;
+    }
+    if (state1.name > state2.name) {
+      return 1;
+    }
+    if (state1.name < state2.name) {
+      return -1;
+    }
+    return 0;
+  };
 
   const [dercyptedBrowserState, setDecryptedBrowserState] =
     useState<Array<BrowserState>>();
@@ -54,11 +75,16 @@ export const useBrowserStateCollection = () => {
       if (!browserSnapshots) {
         return;
       }
+      const currentBrowserId = await BrowserFunctions.getBrowserId();
       setDecryptedBrowserState(
-        await Promise.all(
-          browserSnapshots?.docs.map(
-            async (_) => await decryptBrowserState(_.data())
+        (
+          await Promise.all(
+            browserSnapshots?.docs.map(
+              async (_) => await decryptBrowserState(_.data())
+            )
           )
+        ).sort((state1, state2) =>
+          compareBrowserStates(state1, state2, currentBrowserId)
         )
       );
     };
