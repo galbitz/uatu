@@ -1,4 +1,4 @@
-import { Group, Button, Text } from "@mantine/core";
+import { Group, Button, Text, ActionIcon } from "@mantine/core";
 import { IconTrash } from "@tabler/icons";
 import { formatDate } from "../lib/date";
 import { BrowserState } from "../lib/types";
@@ -19,7 +19,7 @@ export const BrowserHeader = (props: {
           c={props.currentBrowser ? "blue" : undefined}
           onClick={() => props.setOpenedRenameDialog(true)}
         >
-          {props.instance.name}{" "}
+          {props.instance.name}
         </Text>
         <Button
           onClick={() => props.setOpenedDeleteDialog(true)}
@@ -32,16 +32,24 @@ export const BrowserHeader = (props: {
       </Group>
       <Group style={{ paddingLeft: 10 }}>
         <Text size="xs" color="dimmed">
-          OS:{props.instance?.platformInfo?.os}
+          OS: {props.instance?.platformInfo?.os}
         </Text>
         <Text size="xs" color="dimmed">
-          Arch:{props.instance?.platformInfo?.arch}
+          Arch: {props.instance?.platformInfo?.arch}
         </Text>
         <Text size="xs" color="dimmed">
-          Last updated:{formatDate(props.instance.updatedAt)}
+          Last updated: {formatDate(props.instance.updatedAt)}
         </Text>
-        {props.instance.encrypted && <IconLock color="orange" size={15} />}
-        {!props.instance.encrypted && <IconLockOff color="orange" size={15} />}
+        {props.instance.encrypted && (
+          <ActionIcon title="Encrypted">
+            <IconLock color="orange" size={15} />
+          </ActionIcon>
+        )}
+        {!props.instance.encrypted && (
+          <ActionIcon title="Not encrypted">
+            <IconLockOff color="orange" size={15} />
+          </ActionIcon>
+        )}
       </Group>
     </>
   );
