@@ -10,6 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: npm ci && npm run test && npm run build && echo "REACT_APP_VERSION=$REACT_APP_VERSION" >> $GITHUB_ENV
+      - run: echo "${{ env.REACT_APP_VERSION }}"
       - uses: getsentry/action-release@v1
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
