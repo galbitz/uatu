@@ -9,7 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: npm ci && npm run test && npm run build && echo "REACT_APP_VERSION=$REACT_APP_VERSION" >> $GITHUB_ENV
+      - run: npm ci && npm run test && npm run build
+      - run: echo "REACT_APP_VERSION=$(git describe --always --dirty)" >> $GITHUB_ENV
       - run: echo "${{ env.REACT_APP_VERSION }}"
       - uses: getsentry/action-release@v1
         env:
