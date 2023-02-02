@@ -8,10 +8,13 @@ jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: "npm"
       - run: npm ci && npm run test && npm run build
       - run: echo "REACT_APP_VERSION=$(git describe --always --dirty)" >> $GITHUB_ENV
-      - run: echo "${{ env.REACT_APP_VERSION }}"
       - uses: getsentry/action-release@v1
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
