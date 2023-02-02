@@ -32,7 +32,7 @@
   "scripts": {
     "start": "node ./scripts/setenv.mjs craco start",
     "build": "node ./scripts/setenv.mjs craco build",
-    "test": "craco test",
+    "test": "craco test --forceExit",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
