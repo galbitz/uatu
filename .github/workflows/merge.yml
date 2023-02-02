@@ -10,3 +10,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: npm ci && npm run test && npm run build
+      - uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+        with:
+          sourcemaps: "./build"
+          environment: "production"
+          version: ${{env.REACT_APP_VERSION}}
