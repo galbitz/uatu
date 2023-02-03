@@ -33,7 +33,8 @@
     "start": "node ./scripts/setenv.mjs craco start",
     "build": "node ./scripts/setenv.mjs craco build",
     "test": "craco test --forceExit",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "fix-safari": "cat ./build/manifest.json | jq --arg key \"persistent\" --arg value false '. + {(\"background\"): (.[\"background\"] + {($key): $value})}' > ./build/manifest.tmp && mv ./build/manifest.tmp ./build/manifest.json"
   },
   "eslintConfig": {
     "extends": [
