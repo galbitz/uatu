@@ -6,43 +6,47 @@ import { saveBrowserState, saveOnAuthChange } from "../lib/browserStateSaver";
 
 export {};
 
-Sentry.init(sentryConfig);
+try {
+  Sentry.init(sentryConfig);
 
-// browser.runtime.onInstalled.addListener((details) => {
-//   saveState()
-// });
+  // browser.runtime.onInstalled.addListener((details) => {
+  //   saveState()
+  // });
 
-browser.runtime.onStartup.addListener(async () => {
-  await saveState();
-});
+  browser.runtime.onStartup.addListener(async () => {
+    await saveState();
+  });
 
-browser.tabs.onRemoved.addListener(
-  async (tabId: number, removeInfo: object) => {
-    saveState();
-  }
-);
-
-browser.tabs.onUpdated.addListener(
-  async (tabId: number, changeInfo, tab: browser.Tabs.Tab) => {
-    if (
-      changeInfo.status === "complete" ||
-      (!changeInfo.status && (!changeInfo.title || !changeInfo.url))
-    ) {
+  browser.tabs.onRemoved.addListener(
+    async (tabId: number, removeInfo: object) => {
       saveState();
     }
-  }
-);
+  );
 
-// Command is also needed as an external entry point for the shortcut
-browser.commands.onCommand.addListener(async (command) => {
-  if (command !== TAB_MANAGER_COMMAND) {
-    return;
-  }
+  browser.tabs.onUpdated.addListener(
+    async (tabId: number, changeInfo, tab: browser.Tabs.Tab) => {
+      if (
+        changeInfo.status === "complete" ||
+        (!changeInfo.status && (!changeInfo.title || !changeInfo.url))
+      ) {
+        saveState();
+      }
+    }
+  );
 
-  BrowserFunctions.openManager();
-});
+  // Command is also needed as an external entry point for the shortcut
+  browser.commands.onCommand.addListener(async (command) => {
+    if (command !== TAB_MANAGER_COMMAND) {
+      return;
+    }
 
-saveOnAuthChange();
+    BrowserFunctions.openManager();
+  });
+
+  saveOnAuthChange();
+} catch (e) {
+  console.log("Startup error", e);
+}
 
 async function saveState() {
   try {

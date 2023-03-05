@@ -8,7 +8,6 @@ import {
   Stack,
   Group,
   TextInput,
-  Title,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useEffect, useState } from "react";
@@ -73,12 +72,12 @@ export const Config = () => {
           Open Uatu Tab View {openShortCutText}
         </Button>
       </Card>
-      <Space h={"lg"}></Space>
-      <Title order={5}>Settings</Title>
-      <Space h={"md"}></Space>
-      <Card>
-        <Text>You may set a passkey to encrypt data sent to the server. </Text>
-        <List>
+      <Space h={"xs"} />
+      <Card shadow="sm" p="xs" radius="md" withBorder>
+        <Text size={"xs"}>
+          You may set a passkey to encrypt data sent to the server.{" "}
+        </Text>
+        <List size={"xs"}>
           <List.Item>The passkey will be stored in your browser.</List.Item>
           <List.Item>
             Forgotten passkey cannot be recovered. Keep it in a safe place e.g.:
@@ -89,7 +88,6 @@ export const Config = () => {
             everywhere.
           </List.Item>
         </List>
-        <Space h={"md"}></Space>
         <form
           onSubmit={form.onSubmit(() => {
             handleSubmit();
@@ -97,13 +95,16 @@ export const Config = () => {
         >
           <Stack>
             <TextInput
+              size="xs"
               required
               label="Passkey"
               placeholder="securepasskey"
               {...form.getInputProps("passkey")}
             />
-            <Group position="right" mt="xl">
-              <Button type="submit">Set passkey</Button>
+            <Group position="right">
+              <Button type="submit" size="xs">
+                Set passkey
+              </Button>
             </Group>
           </Stack>
         </form>

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Uatu",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Uatu displays open tabs across browsers and platforms",
   "icons": {
     "16": "images/icon-16.png",
