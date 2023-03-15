@@ -10,14 +10,15 @@ interface IBrowserFunctions {
   getFromStorage(key: string): Promise<string>;
   getWindows(): Promise<Browser.Windows.Window[]>;
   getPlatformInfo(): Promise<Browser.Runtime.PlatformInfo>;
+  sendMessage(message: any): Promise<any>;
 }
 
-const evaulateOnce = <T>(fn: () => T) => {
+const evaluateOnce = <T>(fn: () => T) => {
   let promise: T | undefined = undefined;
   return () => (promise = promise || fn());
 };
 
-const getBrowser = evaulateOnce(async () => {
+const getBrowser = evaluateOnce(async () => {
   return await import("webextension-polyfill");
 });
 
@@ -51,6 +52,9 @@ class DevBrowser implements IBrowserFunctions {
   }
   async getWindows(): Promise<Browser.Windows.Window[]> {
     return Promise.resolve([]);
+  }
+  sendMessage(message: any): Promise<any> {
+    throw new Error("Method not implemented.");
   }
 }
 
@@ -105,7 +109,7 @@ class ProdBrowser implements IBrowserFunctions {
       })
     )[0];
 
-    //TODO: fix weird bug where Safary tab query returns item even if it's not the extension index.html
+    //TODO: fix weird bug where Safari tab query returns item even if it's not the extension index.html
     if (tab && tab.windowId && tab.id && tab.url !== "") {
       this.focusTab(tab.windowId, tab.id);
     } else {
@@ -127,9 +131,13 @@ class ProdBrowser implements IBrowserFunctions {
   async getWindows(): Promise<Browser.Windows.Window[]> {
     return await (await getBrowser()).windows.getAll({ populate: true });
   }
+  async sendMessage(message: any): Promise<any> {
+    return (await getBrowser()).runtime.sendMessage(message);
+  }
 }
 
 export const TAB_MANAGER_COMMAND: string = "open-manager";
+export const GET_LAST_TRIGGER: string = "get-last-trigger";
 
 const BrowserFunctions: IBrowserFunctions =
   process.env.NODE_ENV === "development" ? new DevBrowser() : new ProdBrowser();

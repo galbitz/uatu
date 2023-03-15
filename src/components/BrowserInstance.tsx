@@ -9,10 +9,10 @@ import { DeleteDialog } from "./DeleteDialog";
 import { BrowserHeader } from "./BrowserHeader";
 
 export const BrowserInstance = ({ instance }: { instance: BrowserState }) => {
-  const [currentBrowserId, setCurretBrowserId] = useState("");
+  const [currentBrowserId, setCurrentBrowserId] = useState("");
   useEffect(() => {
     BrowserFunctions.getBrowserId().then((bId: string) => {
-      setCurretBrowserId(bId);
+      setCurrentBrowserId(bId);
     });
   }, []);
 
@@ -34,7 +34,7 @@ export const BrowserInstance = ({ instance }: { instance: BrowserState }) => {
         />
         {showEncryptionError(instance) && (
           <Text style={{ paddingLeft: 10 }} color={"red"}>
-            Decryption was unsuccessfull. Please make sure you use the same
+            Decryption was unsuccessful. Please make sure you use the same
             passkey across devices.
           </Text>
         )}

@@ -1,6 +1,8 @@
 import { Container, createStyles, Group, NavLink, Text } from "@mantine/core";
 import { IconHome2 } from "@tabler/icons-react";
 import { saveBrowserState } from "../lib/browserStateSaver";
+import BrowserFunctions, { GET_LAST_TRIGGER } from "../lib/browser";
+import { useState } from "react";
 
 const useStyles = createStyles((theme) => ({
   footer: {
@@ -25,9 +27,14 @@ const useStyles = createStyles((theme) => ({
 
 export const ViewFooter = () => {
   const { classes } = useStyles();
+  const [lastUpdate, setLastUpdate] = useState("");
 
-  const handleVersionInfoClick = () => {
+  const handleVersionInfoClick = async () => {
     saveBrowserState();
+    const response = await BrowserFunctions.sendMessage({
+      request: GET_LAST_TRIGGER,
+    });
+    setLastUpdate(": " + response.response);
   };
 
   return (
@@ -45,6 +52,7 @@ export const ViewFooter = () => {
         <Group>
           <Text onClick={handleVersionInfoClick}>
             Build: {process.env.REACT_APP_VERSION}
+            {lastUpdate}
           </Text>
         </Group>
       </Container>
